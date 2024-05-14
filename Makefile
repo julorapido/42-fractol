@@ -6,8 +6,7 @@ CFLAGS = -Wall
 
 UNAME =$(shell uname -s)
 ifeq ($(shell uname -s), Linux)
-	INCLUDES = -I/usr/include -Imlx\
-			   -I ./includes/
+	INCLUDES = -I/usr/include -Imlx
 else
 	INCLUDES = -I/opt/X11/include -Imlx
 endif
@@ -21,17 +20,17 @@ else
 	MLX_FLAGS = -Lmlx -lmlx -L/usr/X11/lib -lXext -lX11 -framework OpenGL -framework AppKit
 endif
  
-INCLUDES += ./includes/*.h
  
 all: $(MLX_LIB) $(NAME)
  
 .c.o:
-	gcc $(CFLAGS) -c -o $@ $< $(INCLUDES)
+	gcc $(CFLAGS) -c -o $@ $< $(INCLUDES) -I/includes
  
 $(NAME): $(SRCS_OBJ)
-	gcc $(CFLAGS) fractol.c $(INCLUDES) -o $(NAME) $(SRCS_OBJ) $(MLX_FLAGS)
+	gcc $(CFLAGS) fractol.c $(INCLUDES) -I/includes -o $(NAME) $(SRCS_OBJ) $(MLX_FLAGS)
  
 $(MLX_LIB):
+	@echo "Making MiniLibX..."
 	@make -C $(MLX_DIR)
 
 clean:

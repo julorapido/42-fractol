@@ -6,12 +6,12 @@
 /*   By: jsaintho <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/14 10:35:22 by jsaintho          #+#    #+#             */
-/*   Updated: 2024/05/14 17:16:52 by jsaintho         ###   ########.fr       */
+/*   Updated: 2024/05/14 17:56:55 by jsaintho         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 #include <mlx.h>
 #include <math.h>
-//#include <fractol.h>
+#include "fractol.h"
 
 #define WINDOW_WIDTH 1920
 #define WINDOW_HEIGHT 1080
@@ -31,8 +31,8 @@ void	draw_pixel(t_data *data, int x, int y, int color)
 	char	*dst;
 	int		offset;
 
-	if(x < 0 || y < 0 || y >= WINDOW_HEIGTH || x >= WINDOW_WIDTH)
-		return ;
+	//if(x < 0 || y < 0 || y >= WINDOW_HEIGTH || x >= WINDOW_WIDTH)
+	//	return ;
 
 	offset = (y * data->line_length + x * (data->bits_per_pixel / 8));
 
@@ -65,23 +65,20 @@ void	draw_line(t_data *data, int x1, int y1, int x2, int y2)
 }
 
 
-int	main(void)
+int	main(int ac)
 {
-	void	*mlx;
-	void	*mlx_win;
 	t_data	img_;
 
 	t_fractol	f;
 
-	if (ac < 2)
-		help_msg(&f);
+	//if (ac < 2)
+		//help_msg(&f);
 
 	clean_init(&f);
 	init(&f);
 	render(&f);
 
-	draw_line(d, 0, 0, 1000, 1000);
-
+	// draw_line(d, 0, 0, 1000, 1000);
 	// mlx_hook(f.win, EVENT_CLOSE_BTN, 0, end_fractol, &f);
 	// mlx_key_hook(f.win, key_event, &f);
 	// mlx_mouse_hook(f.win, mouse_event, &f);
