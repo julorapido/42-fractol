@@ -6,7 +6,8 @@ CFLAGS = -Wall
 
 UNAME =$(shell uname -s)
 ifeq ($(shell uname -s), Linux)
-	INCLUDES = -I/usr/include -Imlx
+	INCLUDES = -I/usr/include -Imlx\
+			   -I ./includes/
 else
 	INCLUDES = -I/opt/X11/include -Imlx
 endif
@@ -20,7 +21,7 @@ else
 	MLX_FLAGS = -Lmlx -lmlx -L/usr/X11/lib -lXext -lX11 -framework OpenGL -framework AppKit
 endif
  
-
+INCLUDES += ./includes/*.h
  
 all: $(MLX_LIB) $(NAME)
  
@@ -35,5 +36,6 @@ $(MLX_LIB):
 
 clean:
 	rm -f $(SRCS_OBJ)
+	rm	$(NAME)
 
 .PHONY: clean all
