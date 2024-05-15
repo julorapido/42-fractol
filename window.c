@@ -6,7 +6,7 @@
 /*   By: jsaintho <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/14 16:32:30 by jsaintho          #+#    #+#             */
-/*   Updated: 2024/05/14 18:22:42 by jsaintho         ###   ########.fr       */
+/*   Updated: 2024/05/15 13:17:11 by jsaintho         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 #include <fractol.h>
@@ -19,7 +19,7 @@ void clean_init(t_fractol *f)
 	f->win = NULL;
 	f->img = NULL;
 	f->buf = NULL;
-	f->set = -1;
+	// f->set = -1;
 	f->min_r = 0;
 	f->max_r = 0;
 	f->min_i = 0;
@@ -29,25 +29,24 @@ void clean_init(t_fractol *f)
 	f->sx = 0;
 	f->rx = 0;
 	f->fx = 0;
-	f->palette = NULL;
-	f->color_pattern = -1;
-	f->color = 0;
+	//f->palette = NULL;
+	//f->color_pattern = -1;
+	//f->color = 0;
 }
 
 //  =======================================================================
 //                            SET PIXEL COLOR                            
 //  ======================================================================
 //	Add a color to one pixel of the MLX image map.
-//	The MLX image is composed of 32 bits per pixel.
-//	Color ints are stored from right to left, here, and are in
-//	the form of 0xAARRGGBB. 8 bits encode each color component,
+//	The MLX image is composed of 32-bits[INTEGER] Pixels.
+//	Form of 0xAARRGGBB. 8 bits encode each color component,
 //	Alpha (Transparency), Red, Green and Blue.
 //	Bit shifting:
 //		- BB >> 0   (0x000000BB)
 //		- GG >> 8   (0x0000GG00)
 //		- RR >> 16  (0x00RR0000)
 //		- AA >> 24  (0xAA000000)
-static void	set_pixel_color(t_fractol *f, int x, int y, int color)
+void	set_pixel_color(t_fractol *f, int x, int y, int color)
 {
 		f->buf[x * 4 + y * WIDTH * 4] = color;
 		f->buf[x * 4 + y * WIDTH * 4 + 1] = color >> 8;
@@ -58,7 +57,7 @@ static void	set_pixel_color(t_fractol *f, int x, int y, int color)
 //                                 INIT IMG
 //  ========================================================================
 //  - Initialize image, palette and buffer
-//  - 
+//  - Assign f->buf to modify pixel by pixel from it
 static void	init_img(t_fractol *f)
 {
 	int		pixel_bits;
@@ -68,21 +67,24 @@ static void	init_img(t_fractol *f)
 
 	f->palette = ft_calloc((MAX_ITERATIONS + 1), sizeof(int));
 	
-	if (!(f->palette))
-		clean_exit(msg("error initializing color scheme.", "", 1), f);
+	//if (!(f->palette))
+	//	clean_exit(msg("error initializing color scheme.", "", 1), f);
 
-	f->img = mlx_new_image(f->mlx, WINDOW_WIDTH, WINDOW_HEIGHT);
+	f->img = mlx_new_image(f->mlx, WIDTH, HEIGHT);
 	
-	if (!(f->img))
-		clean_exit(msg("image creation error.", "", 1), f);
+	//if (!(f->img))
+	//	clean_exit(msg("image creation error.", "", 1), f);
 
+	// get data adress FROM the IMAGE
+	// so you can write to it
+	// and modify pixel by pixel
 	buf = mlx_get_data_addr(f->img, &pixel_bits, &line_bytes, &endian);
 	f->buf = buf;
 }
 //  =====================================================
 //   					      INIT
 //  =====================================================
-//  Creates a new MLX instance, a new window and populates
+//  Creates a new MLX instance, a new window and set
 //  the fractol data structure with default values.
 void	init(t_fractol *f)
 {

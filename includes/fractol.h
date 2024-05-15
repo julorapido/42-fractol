@@ -6,7 +6,7 @@
 # include <stdio.h>
 # include <math.h>
 
-/*  Dimensions	*/
+/*  Window Settings	*/
 # define WIDTH 900
 # define HEIGHT 900
 # define MAX_ITERATIONS 60
@@ -20,11 +20,25 @@ typedef struct s_fractol
 	int		*palette;
 	int		color_pattern;
 	int		color;
+	double	sx;
+	double	rx;
+	double	fx;
+	double	kr;
+	double	ki;
+	double	min_i;
+	double	max_i;
+	double	min_r;
+	double	max_r;
 }	t_fractol;
 
 // Initialization
+void	clean_init(t_fractol *t);
 void	init(t_fractol *t);
 void	render(t_fractol *t);
+
+// Draw things
+void	set_pixel_color(t_fractol *t, int x, int y, int color);
+void	draw_line(t_fractol *data, int x1, int y1, int x2, int y2);
 
 
 #endif
