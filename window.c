@@ -6,7 +6,7 @@
 /*   By: jsaintho <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/14 16:32:30 by jsaintho          #+#    #+#             */
-/*   Updated: 2024/05/15 16:37:56 by jsaintho         ###   ########.fr       */
+/*   Updated: 2024/05/15 17:30:11 by jsaintho         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 #include <fractol.h>
@@ -51,10 +51,25 @@ void	set_pixel_color(t_fractol *f, int x, int y, int color)
 {
 		if (x < 0 || y < 0 || y > HEIGHT || x > WIDTH)
 			return ;
+		/*
 		f->buf[x * 4 + y * WIDTH * 4] = color;
 		f->buf[x * 4 + y * WIDTH * 4 + 1] = color >> 8;
 		f->buf[x * 4 + y * WIDTH * 4 + 2] = color >> 16;
 		f->buf[x * 4 + y * WIDTH * 4 + 3] = color >> 24;
+		*/
+		char	*dst;
+		int		offset;
+
+		//if(x < 0 || y < 0 || y >= WINDOW_HEIGTH || x >= WINDOW_WIDTH)
+		//	return ;
+
+		offset =(
+				y * f->line_length
+				+
+				x * (f->bits_per_pixel / 8)
+		);
+		dst = f->buf + (offset);
+		*(unsigned int*)dst = color;
 }
 //  ========================================================================
 //                                 INIT IMG
@@ -74,15 +89,14 @@ static void	init_img(t_fractol *f)
 	//	clean_exit(msg("error initializing color scheme.", "", 1), f);
 
 	f->img = mlx_new_image(f->mlx, WIDTH, HEIGHT);
-	
 	//if (!(f->img))
 	//	clean_exit(msg("image creation error.", "", 1), f);
 
 	// get data adress FROM the IMAGE
 	// so you can write to it
-	// and modify pixel by pixel
-	f->buf = mlx_get_data_addr(f->img, &(f->bits_per_pixel)/*&line_bytes*/, 
-			&(f->line_length), &endian);
+	// and modify pixel by pixe
+	f->buf = mlx_get_data_addr(f->img, &f->bits_per_pixel, 
+			&f->line_length, &f->endian);
 	//f->buf = buf;
 }
 //  =====================================================
@@ -102,7 +116,7 @@ void	init(t_fractol *f)
 	f->rx = 0.5;
 	f->fx = 1.0;
 	init_img(f);
-	printf("[mlx window] %dx%d lineLength=%d  buf=%p \n\n", WIDTH, HEIGHT, f->line_length, f->buf);
+	printf("[mlx window] %dx%d lineLength=%d  buf=%p  bpp=%d \n\n\n", WIDTH, HEIGHT, f->line_length, f->buf, f->bits_per_pixel);
 	// get_complex_layout(f);
 }
 //  =========================================================================
@@ -123,6 +137,7 @@ void	render(t_fractol *f)
 	double	pi;
 	int		nb_iter;
 
+	return;
 	mlx_clear_window(f->mlx, f->win);
 	y = -1;
 	while (++y < HEIGHT)
@@ -133,7 +148,7 @@ void	render(t_fractol *f)
 			//pr = f->min_r + (double)x * (f->max_r - f->min_r) / WIDTH;
 			//pi = f->max_i + (double)y * (f->min_i - f->max_i) / HEIGHT;
 			//nb_iter = calculate_fractal(f, pr, pi);
-			set_pixel_color(f, x, y, 0xFFFFFFFF/*f->palette[nb_iter]*/ );
+			set_pixel_color(f, x, y, 0xFFFFFFAF/*f->palette[nb_iter]*/ );
 		}
 	}
 	mlx_put_image_to_window(f->mlx, f->win, f->img, 0, 0);

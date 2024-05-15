@@ -31,6 +31,7 @@ typedef struct s_fractol
 	double	max_r;
 	int		bits_per_pixel;
 	int		line_length;
+	int		endian;
 }	t_fractol;
 
 // Initialization
