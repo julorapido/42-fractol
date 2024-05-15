@@ -6,12 +6,14 @@
 /*   By: jsaintho <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/14 10:35:22 by jsaintho          #+#    #+#             */
-/*   Updated: 2024/05/15 12:47:57 by jsaintho         ###   ########.fr       */
+/*   Updated: 2024/05/15 16:39:28 by jsaintho         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 #include <mlx.h>
 #include <math.h>
 #include <fractol.h>
+#include <stdlib.h>
+#include <stdio.h>
 /*
 void	draw_pixel(t_data *data, int x, int y, int color)
 {
@@ -33,17 +35,23 @@ int	main(int ac, char **argv)
 	char **b= argv;
 	b++; a++;
 	
-	t_fractol	f;
+	t_fractol	*f;
+
+	f = ((t_fractol *) malloc(1 * sizeof(t_fractol)));
 
 	//if (ac < 2)
 		//help_msg(&f);
-	clean_init(&f);
-	init(&f);
-	render(&f);
-	// draw_line(d, 0, 0, 1000, 1000);
+	clean_init(f);
+	init(f);
+	render(f);
+	draw_line(f, 100, 100, 500, 500);
+	//draw_line(f, 60, 300, 600, 600);
+	//draw_line(f, 60, 60, 600, 400);
 	// mlx_hook(f.win, EVENT_CLOSE_BTN, 0, end_fractol, &f);
 	// mlx_key_hook(f.win, key_event, &f);
 	// mlx_mouse_hook(f.win, mouse_event, &f);
-	mlx_loop(f.mlx);
+	//printf("[mlx window] %dx%d line heigth: %d \n\n\n", WIDTH, HEIGHT, f->line_length);
+	//printf("sd");
+	mlx_loop(f->mlx);
 	return (0);
 }

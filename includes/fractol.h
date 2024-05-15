@@ -2,13 +2,13 @@
 #define FRACTOL_H
 
 # include "mlx.h"
-//# include "libft.h"
+# include "libft.h"
 # include <stdio.h>
 # include <math.h>
 
 /*  Window Settings	*/
-# define WIDTH 900
-# define HEIGHT 900
+# define WIDTH 1440
+# define HEIGHT 1024
 # define MAX_ITERATIONS 60
 
 typedef struct s_fractol
@@ -29,6 +29,8 @@ typedef struct s_fractol
 	double	max_i;
 	double	min_r;
 	double	max_r;
+	int		bits_per_pixel;
+	int		line_length;
 }	t_fractol;
 
 // Initialization

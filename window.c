@@ -6,10 +6,11 @@
 /*   By: jsaintho <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/14 16:32:30 by jsaintho          #+#    #+#             */
-/*   Updated: 2024/05/15 13:17:11 by jsaintho         ###   ########.fr       */
+/*   Updated: 2024/05/15 16:37:56 by jsaintho         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 #include <fractol.h>
+#include <stdio.h>
 //  =======================================================================
 // 								 CLEAN INIT
 //  =======================================================================
@@ -48,6 +49,8 @@ void clean_init(t_fractol *f)
 //		- AA >> 24  (0xAA000000)
 void	set_pixel_color(t_fractol *f, int x, int y, int color)
 {
+		if (x < 0 || y < 0 || y > HEIGHT || x > WIDTH)
+			return ;
 		f->buf[x * 4 + y * WIDTH * 4] = color;
 		f->buf[x * 4 + y * WIDTH * 4 + 1] = color >> 8;
 		f->buf[x * 4 + y * WIDTH * 4 + 2] = color >> 16;
@@ -60,8 +63,8 @@ void	set_pixel_color(t_fractol *f, int x, int y, int color)
 //  - Assign f->buf to modify pixel by pixel from it
 static void	init_img(t_fractol *f)
 {
-	int		pixel_bits;
-	int		line_bytes;
+	//int		pixel_bits;
+	//int		line_bytes;
 	int		endian;
 	char	*buf;
 
@@ -78,8 +81,9 @@ static void	init_img(t_fractol *f)
 	// get data adress FROM the IMAGE
 	// so you can write to it
 	// and modify pixel by pixel
-	buf = mlx_get_data_addr(f->img, &pixel_bits, &line_bytes, &endian);
-	f->buf = buf;
+	f->buf = mlx_get_data_addr(f->img, &(f->bits_per_pixel)/*&line_bytes*/, 
+			&(f->line_length), &endian);
+	//f->buf = buf;
 }
 //  =====================================================
 //   					      INIT
@@ -97,6 +101,8 @@ void	init(t_fractol *f)
 	f->sx = 2.0;
 	f->rx = 0.5;
 	f->fx = 1.0;
+	init_img(f);
+	printf("[mlx window] %dx%d lineLength=%d  buf=%p \n\n", WIDTH, HEIGHT, f->line_length, f->buf);
 	// get_complex_layout(f);
 }
 //  =========================================================================

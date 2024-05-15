@@ -4,13 +4,14 @@ SRCS_OBJ = $(SRCS:.c=.o)
 
 CFLAGS = -Wall -Wextra
 
-LIBFT_DIR = ./Libft 
+LIBFT_DIR = Libft/
+LIBFT = $(LIBFT_DIR)/libft.a
 
 UNAME =$(shell uname -s)
 ifeq ($(shell uname -s), Linux)
-	INCLUDES = -I/usr/include -Imlx -I$(LIBFT_DIR)/libft.h
+	INCLUDES = -I/usr/include -Imlx -I$(LIBFT_DIR) -I./includes
 else
-	INCLUDES = -I/opt/X11/include -Imlx -I$(LIBFT_DIR)/libft.h
+	INCLUDES = -I/opt/X11/include -Imlx -I$(LIBFT_DIR)
 endif
  
 MLX_DIR = ./mlx
@@ -23,26 +24,32 @@ else
 endif
  
 
-all: $(MLX_LIB) $(NAME)
+all: $(LIBFT) $(MLX_LIB) $(NAME)
 
 ifeq (1, 1)
 .c.o:
-	gcc $(CFLAGS) -c -o $@ $< $(INCLUDES) -I./includes
+	gcc $(CFLAGS) -c -o $@ $< $(INCLUDES)
 endif
 
 $(NAME): $(SRCS_OBJ)
-	gcc $(CFLAGS) $(SRCS_) $(INCLUDES) -I./includes -o $(NAME) $(SRCS_OBJ) $(MLX_FLAGS) 
+	gcc $(CFLAGS) $(SRCS_) $(INCLUDES) -o $(NAME) $(SRCS_OBJ) $(MLX_FLAGS)
 
 $(MLX_LIB):
 	@echo "Making MiniLibX..."
 	@make -C $(MLX_DIR)
 
-$(LIBFT_):
-	@echo "Making Libft"
+$(LIBFT):
+	@echo "Making Libft.."
 	@make -C $(LIBFT_DIR)
 
+$(NAME): $(SRCS_OBJ)
+	gcc $(CFLAGS) $(SRCS_) $(INCLUDES) -o $(NAME) $(SRCS_OBJ) $(LIBFT) \
+		$(MLX_FLAGS)
+
 clean:
+	@echo "Removing .o files"
 	rm -f $(SRCS_OBJ)
+	@make clean -C $(LIBFT_DIR)
 	rm	$(NAME)
 
 .PHONY: clean all
