@@ -6,13 +6,15 @@
 /*   By: jsaintho <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/15 12:42:04 by jsaintho          #+#    #+#             */
-/*   Updated: 2024/05/15 18:45:46 by jsaintho         ###   ########.fr       */
+/*   Updated: 2024/05/15 19:15:03 by jsaintho         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 #include <fractol.h>
 #include <stdlib.h>
 #include <stdio.h>
 #include <stdbool.h>
+
+#define SQ(x) x*x
 
 void	draw_line(t_fractol *data, int x1, int y1, int x2, int y2)
 {
@@ -79,6 +81,9 @@ void try(t_fractol *data)
 	//  	c_re = MinRe + x * (MaxRe-MinRe) / (WindowWidth - 1);
  	//		c_im = MaxIm - y * (MaxIm-MinIm) / (WIndowHeight - 1);
 	//  ============================================================
+	// Z = Z2 + c 
+	// c = c_re + c_im
+	// Zn => Zn-1 + c
 	for(int y = 0; y < HEIGHT; ++y)
 	{
 		// assign imaginary number
@@ -86,24 +91,26 @@ void try(t_fractol *data)
 
     	for(int x = 0; x < WIDTH; ++x)
     	{
-			// assign complex number 
+			// assign real number 
         	double c_re = MinRe + x * Re_factor;
-
 
         	double Z_re = c_re, Z_im = c_im;
         	bool isInside = true;
-
-        	for(int n = 0; n < 50; ++n)// max iterations 50
+        	for(int n = 0; n < 50; ++n)// max iterations 50 of imaginary number
         	{
-            	double Z_re2 = (Z_re * Z_re), Z_im2 = (Z_im * Z_im);
-            	if(Z_re2 + Z_im2 > 4)
+				// check if ABS(Zn)
+				// c = Z_re + Z_im
+            	if(SQ(Z_re) + SQ(Z_im) > 4)
             	{
                 	isInside = false;
                 	break;
             	}
-				/* Z = Z2 + c */
-            	Z_im = 2*Z_re*Z_im + c_im;
-            	Z_re = Z_re2 - Z_im2 + c_re;
+				// Z = Z2 + c 
+				// Z2+c part of the code:
+				// Adding two complex numbers
+				// (a + bi)2 = a2 - b2 + 2abi
+            	Z_im = 2 * Z_re * Z_im + c_im;
+            	Z_re = (SQ(Z_re) - SQ(Z_im)) + c_re;
         	}
         	if(isInside) 
 				set_pixel_color(data, x, y, 0x00FF0000);
