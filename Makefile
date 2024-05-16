@@ -23,16 +23,15 @@ else
 	MLX_FLAGS = -Lmlx -lmlx -L/usr/X11/lib -lXext -lX11 -framework OpenGL -framework AppKit
 endif
  
-
 all: $(LIBFT) $(MLX_LIB) $(NAME)
 
-ifeq (1, 1)
-.c.o:
+ifeq (0, 1)
+	.c.o:
 	gcc $(CFLAGS) -c -o $@ $< $(INCLUDES)
-endif
-
-$(NAME): $(SRCS_OBJ)
+	$(NAME): $(SRCS_OBJ)
+	@echo "Compiling fractol..."
 	gcc $(CFLAGS) $(SRCS_) $(INCLUDES) -o $(NAME) $(SRCS_OBJ) $(MLX_FLAGS)
+endif
 
 $(MLX_LIB):
 	@echo "Making MiniLibX..."

@@ -6,7 +6,7 @@
 /*   By: jsaintho <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/14 10:35:22 by jsaintho          #+#    #+#             */
-/*   Updated: 2024/05/15 17:52:29 by jsaintho         ###   ########.fr       */
+/*   Updated: 2024/05/16 15:36:33 by jsaintho         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 #include <mlx.h>
@@ -48,6 +48,7 @@ int	main(int ac, char **argv)
 	set_pixel_color(f, 500, 500, 0x00FF00000);
 	draw_line(f, 100, 100, 1000, 1000);
 	try(f);
+	//try_julia(f);
 	//draw_line(f, 60, 300, 600, 600);
 	//draw_line(f, 60, 60, 600, 400);
 	// mlx_hook(f.win, EVENT_CLOSE_BTN, 0, end_fractol, &f);

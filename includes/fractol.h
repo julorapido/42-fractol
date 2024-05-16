@@ -7,8 +7,8 @@
 # include <math.h>
 
 /*  Window Settings	*/
-# define WIDTH 1440
-# define HEIGHT 1024
+# define WIDTH 1280
+# define HEIGHT 960
 # define MAX_ITERATIONS 60
 
 typedef struct s_fractol
@@ -40,6 +40,7 @@ void	init(t_fractol *t);
 void	render(t_fractol *t);
 
 // Draw things
+void	mandelbrot(t_fractol *t);
 void	set_pixel_color(t_fractol *t, int x, int y, int color);
 void	draw_line(t_fractol *data, int x1, int y1, int x2, int y2);
 
