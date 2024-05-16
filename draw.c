@@ -6,7 +6,7 @@
 /*   By: jsaintho <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/15 12:42:04 by jsaintho          #+#    #+#             */
-/*   Updated: 2024/05/16 16:01:54 by jsaintho         ###   ########.fr       */
+/*   Updated: 2024/05/16 17:51:03 by jsaintho         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 #include <fractol.h>
@@ -65,14 +65,14 @@ void try(t_fractol *data)
 	// - real part of the complex numbers will go from -2.0 to 1.0
 	// - lower border of image is equivalent to the imaginary part -1.2 AKA : MIN IMAGINARY
 	// - max imaginary depends on window size to prevent from image getting stretch
-	double MinRe = -2.0; // MIN REAL
-	double MaxRe = 1.0; // MAX REAL
-	double MinIm = -1.2; // MIN IMAGINARY
-	double MaxIm = MinIm + (MaxRe-MinRe) * HEIGHT/WIDTH; // MAX IMAGINARY
+	//double MinRe = -2.0; // MIN REAL
+	//double MaxRe = 1.0; // MAX REAL
+	//double MinIm = -1.2; // MIN IMAGINARY
+	//double MaxIm = MinIm + (MaxRe-MinRe) * HEIGHT/WIDTH; // MAX IMAGINARY
 	// =============================================================
 
-	double Re_factor = (MaxRe-MinRe) / (WIDTH - 1);
-	double Im_factor = (MaxIm-MinIm) / (HEIGHT - 1);
+	double Re_factor = (data->MaxRe - data->MinRe) / (WIDTH - 1);
+	double Im_factor = (data->MaxIm - data->MinIm) / (HEIGHT - 1);
 
 	//  Assuming window goes from (0, 0) to (Width - 1, Height - 1)
 	//  ============================================================
@@ -88,16 +88,16 @@ void try(t_fractol *data)
 	for(int y = 0; y < HEIGHT; ++y)
 	{
 		// assign imaginary number
-    	double c_im = MaxIm - y * Im_factor;
+    	double c_im = data->MaxIm - y * Im_factor;
 
     	for(int x = 0; x < WIDTH; ++x)
     	{
 			// assign real number 
-        	double c_re = MinRe + x * Re_factor;
+        	double c_re = data->MinRe + x * Re_factor;
 			// c is assigned for each pixel
 			// then we search through 50 iterations from here
 			// to find numbers that are inside the Mandelbrot set
-        	double Z_re = c_re, Z_im = c_im;
+        	double Z_re = data->MinRe + x * Re_factor, Z_im = c_im;
         	bool isInside = true;
 			int n = 0;
         	for(; n < MAX_ITERATIONS; ++n)// max iterations 50 of imaginary number
@@ -136,39 +136,44 @@ void try(t_fractol *data)
 
 
 
-void try_julia(t_fractol *data)
+void try_julia(t_fractol *f)
 {
-	double MinRe = -2.0; // MIN REAL
-	double MaxRe = 1.0; // MAX REAL
-	double MinIm = -1.2; // MIN IMAGINARY
-	double MaxIm = MinIm + (MaxRe-MinRe) * HEIGHT/WIDTH; // MAX IMAGINARY
-	double Re_factor = (MaxRe-MinRe) / (WIDTH - 1);
-	double Im_factor = (MaxIm-MinIm) / (HEIGHT - 1);
+	//double MinRe = -2.0; // MIN REAL
+	//double MaxRe = 1.0; // MAX REAL
+	//double MinIm = -1.2; // MIN IMAGINARY
+	//double MaxIm = MinIm + (MaxRe-MinRe) * HEIGHT/WIDTH; // MAX IMAGINARY
+	double Re_factor = (f->MaxRe - f->MinRe) / (WIDTH - 1);
+	double Im_factor = (f->MaxIm - f->MinIm) / (HEIGHT - 1);
 
 	for(int y = 0; y < HEIGHT; ++y)
 	{
-		// assign imaginary number
-    	double c_im = MaxIm - y * Im_factor;
     	for(int x = 0; x < WIDTH; ++x)
     	{
-			// assign real number 
-        	double c_re = MinRe + x * Re_factor;
-		
-        	double Z_re = c_re, Z_im = c_im;
+        	double Z_re = f->MinRe + x * Re_factor, 
+				Z_im = f->MaxIm - y * Im_factor;
         	bool isInside = true;
-        	for(int n = 0; n < 50; ++n)// max iterations 50 of imaginary number
+			int n = 0;
+        	for(; n < MAX_ITERATIONS; ++n)// max iterations 50 of imaginary number
         	{	
             	if(SQ(Z_re) + SQ(Z_im) > 4)
             	{
                 	isInside = false;
                 	break;
-            	}	
+            	}
 				double zim2 = SQ(Z_im);
-				Z_im = (2 * Z_re * Z_im) + 0.288; // increment it by 2(abi)
-            	Z_re = (SQ(Z_re) - zim2) + 0.288; // increment it by a² - b² 
+            	Z_im = (2 * Z_re * Z_im) + 0.288;
+            	Z_re = (SQ(Z_re) - zim2) + 0.353;
 			}
         	if(isInside) 
-				set_pixel_color(data, x, y, 0x00FF0000);
+				set_pixel_color(f, x, y, (0x00FF0000));
+			else
+				set_pixel_color(f, x, y, 0x00000000 + (
+					n > (MAX_ITERATIONS - 1) / 2 ? 
+						(n * (0x00FF0000 / ((MAX_ITERATIONS - 1) / 2) )) >> 16 
+						: 
+						(n *(0xFF000000 / ((MAX_ITERATIONS - 1) / 2) )) >> 24
+					)
+				);
    		}
 	}
 }

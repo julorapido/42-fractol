@@ -25,10 +25,10 @@ typedef struct s_fractol
 	double	fx;
 	double	kr;
 	double	ki;
-	double	min_i;
-	double	max_i;
-	double	min_r;
-	double	max_r;
+	double	MinIm;
+	double	MaxIm;
+	double	MinRe;
+	double	MaxRe;
 	int		bits_per_pixel;
 	int		line_length;
 	int		endian;
