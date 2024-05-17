@@ -6,57 +6,38 @@
 /*   By: jsaintho <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/14 10:35:22 by jsaintho          #+#    #+#             */
-/*   Updated: 2024/05/16 17:52:21 by jsaintho         ###   ########.fr       */
+/*   Updated: 2024/05/17 16:33:33 by jsaintho         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 #include <mlx.h>
 #include <math.h>
 #include <fractol.h>
+#include <keys.h>
 #include <stdlib.h>
 #include <stdio.h>
-#include <stdbool.h>
-/*
-void	draw_pixel(t_data *data, int x, int y, int color)
-{
-	char	*dst;
-	int		offset;
 
-	//if(x < 0 || y < 0 || y >= WINDOW_HEIGTH || x >= WINDOW_WIDTH)
-	//	return ;
+int		mouse_event(int k, int x, int y, t_fractol *m);
+void	key_hook(int n, t_fractol *f);
+int		hook_mousedown(int button, int x, int y, t_fractol *mlx);
 
-	offset = (y * data->line_length + x * (data->bits_per_pixel / 8));
-
-	dst = data->addr + (offset);
-	*(unsigned int*)dst = color;
-}*/
-
-int	main(int ac, char **argv)
-{
-	int	a = ac;
-	char **b= argv;
-	b++; a++;
-	
+int	main(int argc, char **argv)
+{	
 	t_fractol	*f;
 
 	f = ((t_fractol *) malloc(1 * sizeof(t_fractol)));
-
-	//if (ac < 2)
-		//help_msg(&f);
-	clean_init(f);
+	if (argc < 2 || argc > 2)
+		return (0);
 	init(f);
+	f->fractal_ = argv[1];
+	/*if (ft_strncmp(argv[1], "mandelbrot", 9) == 0)
+		mandelbrot(f);
+	if (ft_strncmp(argv[1], "julia", 5) == 0)
+		julia(f);
+	if (ft_strncmp(argv[1], "newton", 6) == 0)
+		newton(f);*/
 	render(f);
-	set_pixel_color(f, 500, 500, 0x00FF00000);
-	draw_line(f, 100, 100, 1000, 1000);
-	try(f);
-	//try_julia(f);
-	//draw_line(f, 60, 300, 600, 600);
-	//draw_line(f, 60, 60, 600, 400);
-	// mlx_hook(f.win, EVENT_CLOSE_BTN, 0, end_fractol, &f);
-	// mlx_key_hook(f.win, key_event, &f);
-	// mlx_mouse_hook(f.win, mouse_event, &f);
-	//printf("[mlx window] %dx%d line heigth: %d \n\n\n", WIDTH, HEIGHT, f->line_length);
-	//printf("sd");
+	mlx_hook(f->win, 2, 1L << 0, key_hook, f);
+	mlx_hook(f->win, 4, 1L << 2, hook_mousedown, f);
 	mlx_put_image_to_window(f->mlx, f->win, f->img, 0, 0);
 	mlx_loop(f->mlx);
-	return (0);
 }

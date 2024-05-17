@@ -1,5 +1,5 @@
 NAME = fractol
-SRCS_ = fractol.c window.c draw.c
+SRCS_ = utils.c fractol.c window.c draw.c
 SRCS_OBJ = $(SRCS:.c=.o)
 
 CFLAGS = -Wall -Wextra
