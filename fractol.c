@@ -6,7 +6,7 @@
 /*   By: jsaintho <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/14 10:35:22 by jsaintho          #+#    #+#             */
-/*   Updated: 2024/05/17 16:33:33 by jsaintho         ###   ########.fr       */
+/*   Updated: 2024/05/22 17:31:12 by jsaintho         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 #include <mlx.h>
@@ -21,7 +21,8 @@ void	key_hook(int n, t_fractol *f);
 int		hook_mousedown(int button, int x, int y, t_fractol *mlx);
 
 int	main(int argc, char **argv)
-{	
+{
+	int	c;
 	t_fractol	*f;
 
 	f = ((t_fractol *) malloc(1 * sizeof(t_fractol)));
@@ -29,13 +30,12 @@ int	main(int argc, char **argv)
 		return (0);
 	init(f);
 	f->fractal_ = argv[1];
-	/*if (ft_strncmp(argv[1], "mandelbrot", 9) == 0)
-		mandelbrot(f);
-	if (ft_strncmp(argv[1], "julia", 5) == 0)
-		julia(f);
-	if (ft_strncmp(argv[1], "newton", 6) == 0)
-		newton(f);*/
-	render(f);
+	c = render(f);
+	if (!c)
+	{
+		clean_exit(f);
+		return (0);
+	}
 	mlx_hook(f->win, 2, 1L << 0, key_hook, f);
 	mlx_hook(f->win, 4, 1L << 2, hook_mousedown, f);
 	mlx_put_image_to_window(f->mlx, f->win, f->img, 0, 0);

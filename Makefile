@@ -49,6 +49,8 @@ clean:
 	@echo "Removing .o files"
 	rm -f $(SRCS_OBJ)
 	@make clean -C $(LIBFT_DIR)
-	rm	$(NAME)
+
+fclean: clean
+	rm $(NAME)
 
 .PHONY: clean all

@@ -6,32 +6,21 @@
 /*   By: jsaintho <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/17 10:42:45 by jsaintho          #+#    #+#             */
-/*   Updated: 2024/05/17 16:34:30 by jsaintho         ###   ########.fr       */
+/*   Updated: 2024/05/22 18:29:01 by jsaintho         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 #include "fractol.h"
 #include "keys.h"
 #include <stdlib.h>
-#include <stdio.h>
 #include <mlx.h>
 // =================================
-// 			  CLOSE WINDOW
+// 			  KEYBOARD
 // =================================
 int	key_hook(int k_code, t_fractol *f)
 {
-	printf("%d \n", k_code);
 	if (k_code == K_ESC)
 	{
-		if(f->img)
-		{
-			mlx_destroy_image(f->mlx, f->img);
-		}
-		if (f->mlx && f->win)
-		{
-			mlx_loop_end(f->mlx);
-			mlx_destroy_window(f->mlx, f->win);
-			free(f);
-		}
+		clean_exit(f);
 	}
 	return 0;
 }
@@ -57,13 +46,29 @@ void	zoom(int x, int y, t_fractol *f, double zoom)
 int		hook_mousedown(int button, int x, int y, t_fractol *f)
 {
 	if (button == 4)
-		zoom(x, y, f, 0.95);
+		zoom(x, y, f, 0.98);
 	else if (button == 5)
-		zoom(x, y, f, 1 / 0.95);
-	render(f);
+		zoom(x, y, f, 1 / 0.98);
 	f->Re_factor = (f->MaxRe - f->MinRe) / (WIDTH - 1);
 	f->Im_factor = (f->MaxIm - f->MinIm) / (HEIGHT - 1);
+	render(f);
 	if (y < 0 || x > WIDTH)
 		return (0);
 	return (0);
+}
+// =================================
+//             CLEAN EXIT
+// =================================
+void	clean_exit(t_fractol *f)
+{
+	if(f->img)
+	{
+		mlx_destroy_image(f->mlx, f->img);
+	}	
+	if (f->mlx && f->win)
+	{
+		mlx_loop_end(f->mlx);
+		mlx_destroy_window(f->mlx, f->win);
+		free(f);
+	}
 }
