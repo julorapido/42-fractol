@@ -6,7 +6,7 @@
 /*   By: jsaintho <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/14 16:32:30 by jsaintho          #+#    #+#             */
-/*   Updated: 2024/05/22 17:37:33 by jsaintho         ###   ########.fr       */
+/*   Updated: 2024/05/23 12:15:09 by jsaintho         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 #include <fractol.h>
@@ -23,12 +23,16 @@
 //		- GG >> 8   (0x0000FF00)
 //		- RR >> 16  (0x00FF0000)
 //		- AA >> 24  (0xAA000000)
-void	set_pixel_color(t_fractol *f, int x, int y, int pixel_insideSet, int n)
+void	set_pixel_color(t_fractol *f, int x, int y, int n)
 {
 		char	*dst;
 		int		offset;
 		int		color;
+		int		pixel_insideSet;
 
+		pixel_insideSet = 0;
+		if (n == MAX_ITERATIONS)
+			pixel_insideSet = 1;
 		if (x < 0 || y < 0 || y > HEIGHT || x > WIDTH)
 			return ;
 		if(!pixel_insideSet)
@@ -59,7 +63,9 @@ static void	init_img(t_fractol *f)
 	f->MaxIm =  f->MinIm + (f->MaxRe - f->MinRe) * HEIGHT/WIDTH;
 	f->Re_factor = (f->MaxRe - f->MinRe) / (WIDTH - 1);
 	f->Im_factor = (f->MaxIm - f->MinIm) / (HEIGHT - 1);
-
+	f->x_offset = 0;
+	f->y_offset = 0;
+		
 	f->img = mlx_new_image(f->mlx, WIDTH, HEIGHT);
 	if (!(f->img))
 		clean_exit(f);
@@ -91,8 +97,8 @@ int	render(t_fractol *f)
 		mandelbrot(f);
 	else if (ft_strncmp(f->fractal_, "julia", 5) == 0)
 		julia(f);
-	else if (ft_strncmp(f->fractal_, "newton", 6) == 0)
-		newton(f);
+	/*else if (ft_strncmp(f->fractal_, "newton", 6) == 0)
+		newton(f);*/
 	else if (ft_strncmp(f->fractal_, "ship", 4) == 0)
 		burning_ship(f);
 	else

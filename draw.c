@@ -6,14 +6,11 @@
 /*   By: jsaintho <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/15 12:42:04 by jsaintho          #+#    #+#             */
-/*   Updated: 2024/05/22 17:57:36 by jsaintho         ###   ########.fr       */
+/*   Updated: 2024/05/23 15:55:16 by jsaintho         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 #include <fractol.h>
 #include <stdlib.h>
-#include <stdio.h>
-#include <stdbool.h>
-
 //  ty : http://warp.povusers.org/Mandelbrot/
 //  ---------------------------------------
 //  Mandelbrot set is a set complex numbers
@@ -51,72 +48,70 @@
 //		c_im = MaxIm - y * (MaxIm-MinIm) / (WIndowHeight - 1);
 //  ============================================================
 
-void mandelbrot(t_fractol *data)
+void mandelbrot(t_fractol *m)
 {
-	double Re_factor = (data->MaxRe - data->MinRe) / (WIDTH - 1);
-	double Im_factor = (data->MaxIm - data->MinIm) / (HEIGHT - 1);
+	int	y;
+	int	x;
 
-	for(int y = 0; y < HEIGHT; ++y)
+	y = -1;
+	while(y++ < HEIGHT)
 	{
-    	double c_im = data->MaxIm - y * Im_factor;
-
-    	for(int x = 0; x < WIDTH; ++x)
-    	{
-			// assign real number 
-        	double c_re = data->MinRe + x * Re_factor;
-        	double Z_re = c_re, Z_im = c_im;
-        	bool isInside = true;
-			int n = 0;
-        	for(; n < MAX_ITERATIONS; ++n)// max iterations 50 of imaginary number
+    	m->c_im = (m->MaxIm - y * (m->Im_factor)) + m->y_offset;
+    	x = 0;
+		while (x < WIDTH)
+		{
+        	m->c_re = (m->MinRe + x * (m->Re_factor)) + m->x_offset;
+			m->Z_re = m->c_re;
+			m->Z_im = m->c_im;
+			m->n = -1;
+        	while(m->n++ < MAX_ITERATIONS)
         	{
-				// check if ABS(Zn)
-            	if(SQ(Z_re) + SQ(Z_im) > 4)
-            	{
-                	isInside = false;
-                	break;
-				}
-				double zim2 = SQ(Z_im);
-            	Z_im = (2 * Z_re * Z_im) + c_im; // increment it by 2(abi)
-            	Z_re = (SQ(Z_re) - zim2) + c_re; // increment it by a² - b²
+            	if(SQ(m->Z_re) + SQ(m->Z_im) > 4)
+            		break;
+				m->zim2 = SQ(m->Z_im);
+            	m->Z_im = (2 * m->Z_re * m->Z_im) + m->c_im; // increment it by 2(abi)
+            	m->Z_re = (SQ(m->Z_re) - m->zim2) + m->c_re; // increment it by a² - b²
         	}
-			set_pixel_color(data, x, y, isInside, n);
+			set_pixel_color(m, x, y, m->n);
+			x++;
    		}
 	}
 }
 
 
-
 void julia(t_fractol *f)
 {
-	for(int y = 0; y < HEIGHT; ++y)
+	int	y;
+	int	x;
+
+	y = 0;
+	while(y < HEIGHT)
 	{
-    	for(int x = 0; x < WIDTH; ++x)
+		x = 0;
+    	while(x < WIDTH)
     	{
-        	double Z_re = f->MinRe + x * (f->Re_factor);
-			double Z_im = f->MaxIm - y * (f->Im_factor);
-        	
-			int isInside = 1;
-			int n = 0;
-        	for(; n < MAX_ITERATIONS; ++n)// max iterations 50 of imaginary number
-        	{	
-            	if(SQ(Z_re) + SQ(Z_im) > 4)
-            	{
-                	isInside = 0;
-                	break;
-            	}
-				double zim2 = SQ(Z_im);
-            	Z_im = (2 * Z_re * Z_im) - 0.3842;
-            	Z_re = (SQ(Z_re) - zim2) - 0.70176;
+        	f->Z_re = f->MinRe + x * (f->Re_factor) + f->x_offset;
+			f->Z_im = f->MaxIm - y * (f->Im_factor) + f->y_offset;
+			f->n = 0;
+			while (f->n < MAX_ITERATIONS)
+			{
+        		if (SQ(f->Z_re) + SQ(f->Z_im) > 4)
+        			break;
+				f->zim2 = SQ(f->Z_im);
+            	f->Z_im = (2 * f->Z_re * f->Z_im) - 0.3842;
+            	f->Z_re = (SQ(f->Z_re) - f->zim2) - 0.70176;
+				f->n++;
 			}
-			//DRAW_COLORED_PIXEL(f, isInside, n);
-			set_pixel_color(f, x, y, isInside, n);
+			set_pixel_color(f, x, y, f->n);
+			x++;
    		}
+		y++;
 	}
 }
 
 void burning_ship(t_fractol *data)
 {
-	for(int y = 0; y < HEIGHT; ++y)
+	/*for(int y = 0; y < HEIGHT; ++y)
 	{
 		double c_im = data->MaxIm - y * data->Im_factor;
 
@@ -125,24 +120,19 @@ void burning_ship(t_fractol *data)
         	double c_re = data->MinRe + x * data->Re_factor;
 	
 			double Z_re = c_re, Z_im = c_im;
-        	bool isInside = true;
 			int n = 0;
         	for(; n < MAX_ITERATIONS; ++n) 
 			{
 			 	if(SQ(Z_re) + SQ(Z_im) > 4)
-            	{
-                	isInside = false;
                 	break;
-				}
-
-				double zim2 = (Z_re * Z_re) - (Z_im * Z_im);
+				double zim2 = (Z_im);
 				// IMAGINARY => 2(abi)
-            	Z_im = fabs(2 * Z_re * Z_im) + c_im; // increment it by 2(abi)
+            	Z_im = fabs(Z_im * Z_im) + c_im; // increment it by 2(abi)
 				// REAL => a² - b²
             	Z_re = fabs(zim2) + c_re; // increment it by a² - b²
             }
-			set_pixel_color(data, x, y, isInside, n);
+			set_pixel_color(data, x, y, n);
    		}
-	}
+	}*/
 }
 

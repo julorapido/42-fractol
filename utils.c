@@ -6,21 +6,32 @@
 /*   By: jsaintho <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/17 10:42:45 by jsaintho          #+#    #+#             */
-/*   Updated: 2024/05/22 18:29:01 by jsaintho         ###   ########.fr       */
+/*   Updated: 2024/05/23 16:01:10 by jsaintho         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 #include "fractol.h"
 #include "keys.h"
 #include <stdlib.h>
 #include <mlx.h>
+#include <stdio.h>
 // =================================
 // 			  KEYBOARD
 // =================================
-int	key_hook(int k_code, t_fractol *f)
+int	k_hook(int k_code, t_fractol *f)
 {
 	if (k_code == K_ESC)
-	{
 		clean_exit(f);
+	else
+	{
+		if (k_code == K_UP)
+			f->y_offset += (2 * f->Re_factor) * (WIDTH / HEIGHT);
+		if (k_code == K_DOWN)
+			f->y_offset -= (2 * f->Re_factor) * (WIDTH / HEIGHT);
+		if (k_code == K_LEFT)
+			f->x_offset -= (2 * f->Re_factor) * (WIDTH / HEIGHT);
+		if (k_code == K_RIGHT)
+			f->x_offset += (2 * f->Re_factor) * (WIDTH / HEIGHT);
+		render(f);
 	}
 	return 0;
 }
@@ -39,6 +50,17 @@ void	zoom(int x, int y, t_fractol *f, double zoom)
 	f->MinRe = f->MaxRe + zoom * center_re;
 	f->MinIm += (center_im - zoom * center_im) / 2;
 	f->MaxIm = f->MinIm + zoom * center_im;
+
+	if (x > WIDTH || y > HEIGHT)
+		return ;
+	
+	y -= HEIGHT / 2;
+	x -= WIDTH / 2;
+	f->y_offset -= (0.01 * (y * 0.01) * (WIDTH / HEIGHT));
+	if (zoom > 0)
+		f->x_offset += (0.01 * (x * 0.01) * (WIDTH / HEIGHT));
+	else 
+		f->x_offset -= (0.01 * (x * 0.01) * (WIDTH / HEIGHT));
 }
 // ==================================
 //          MOUSE BUTTON DOWN
@@ -52,8 +74,6 @@ int		hook_mousedown(int button, int x, int y, t_fractol *f)
 	f->Re_factor = (f->MaxRe - f->MinRe) / (WIDTH - 1);
 	f->Im_factor = (f->MaxIm - f->MinIm) / (HEIGHT - 1);
 	render(f);
-	if (y < 0 || x > WIDTH)
-		return (0);
 	return (0);
 }
 // =================================
