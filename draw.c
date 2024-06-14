@@ -6,7 +6,7 @@
 /*   By: jsaintho <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/15 12:42:04 by jsaintho          #+#    #+#             */
-/*   Updated: 2024/05/23 15:55:16 by jsaintho         ###   ########.fr       */
+/*   Updated: 2024/06/14 16:23:42 by jsaintho         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 #include <fractol.h>
@@ -22,7 +22,8 @@
 //		- x-axis represents the real part of the number 
 //   	- y-axis represents the imaginary part 
 //  (eg. the number 1+2i will be a point which x-coord is 1 and y-coord 2)
-//  This is exactly the Mandelbrot set. We just are drawing complex numbers on a 2D cartesian coordinate system:
+//  This is exactly the Mandelbrot set.
+//  We just are drawing complex numbers on a 2D cartesian coordinate system:
 //  If c belongs to the set, we draw a point at the respective location, 
 //  else we don't (or we use another color). 
 //  Zo = c
@@ -31,9 +32,9 @@
 // 						CORNER ATTRIBUTIONS
 // ==============================================================
 // - Define Min && Max real parts of the complex number
-// - (left border of the image) is -2.0 && the maximum (the right border) is 1.0.
+// - (left border of the image) is -2.0 && the max (the right border) is 1.0.
 // - real part of the complex numbers will go from -2.0 to 1.0
-// - lower border of image is equivalent to the imaginary part -1.2 AKA : MIN IMAGINARY	
+// - lower border of image is equivalent to the imaginary part -1.2
 // - max imaginary depends on window size to prevent from image getting stretch
 //double MinRe = -2.0; // MIN REA
 //double MaxRe = 1.0; // MAX REAL
@@ -47,92 +48,91 @@
 //  	c_re = MinRe + x * (MaxRe-MinRe) / (WindowWidth - 1);
 //		c_im = MaxIm - y * (MaxIm-MinIm) / (WIndowHeight - 1);
 //  ============================================================
+//  Every Loop until MAX_ITERATIONS checks if complex number (c_re + c_im)
+//  is greater than Hausdorff dimension exact value assiociated to the fractal
+//  -- If (is greater) value will escape the set and go to infinite 
 
-void mandelbrot(t_fractol *m)
+void	mandelbrot(t_fractol *m)
 {
-	int	y;
 	int	x;
 
-	y = -1;
-	while(y++ < HEIGHT)
+	m->y = -1;
+	while (m->y++ < HEIGHT)
 	{
-    	m->c_im = (m->MaxIm - y * (m->Im_factor)) + m->y_offset;
-    	x = 0;
-		while (x < WIDTH)
+		m->c_im = (m->maxim - m->y * (m->Im_factor)) + m->y_offset;
+		x = -1;
+		while (x++ < WIDTH)
 		{
-        	m->c_re = (m->MinRe + x * (m->Re_factor)) + m->x_offset;
+			m->c_re = (m->minre + x * (m->Re_factor)) + m->x_offset;
 			m->Z_re = m->c_re;
 			m->Z_im = m->c_im;
-			m->n = -1;
-        	while(m->n++ < MAX_ITERATIONS)
-        	{
-            	if(SQ(m->Z_re) + SQ(m->Z_im) > 4)
-            		break;
-				m->zim2 = SQ(m->Z_im);
-            	m->Z_im = (2 * m->Z_re * m->Z_im) + m->c_im; // increment it by 2(abi)
-            	m->Z_re = (SQ(m->Z_re) - m->zim2) + m->c_re; // increment it by a² - b²
-        	}
-			set_pixel_color(m, x, y, m->n);
-			x++;
-   		}
+			m->n = 0;
+			while (m->n < MAX_ITERATIONS)
+			{
+				if ((m->Z_re * m->Z_re) + (m->Z_im * m->Z_im) > 4)
+					break ;
+				m->zim2 = m->Z_im * m->Z_im;
+				m->Z_im = (2 * m->Z_re * m->Z_im) + m->c_im;
+				m->Z_re = ((m->Z_re * m->Z_re) - m->zim2) + m->c_re;
+				m->n++;
+			}
+			set_pixel_color(m, x, m->y, m->n);
+		}
 	}
 }
 
-
-void julia(t_fractol *f)
+void	julia(t_fractol *f)
 {
-	int	y;
 	int	x;
 
-	y = 0;
-	while(y < HEIGHT)
+	f->y = -1;
+	while (f->y++ < HEIGHT)
 	{
-		x = 0;
-    	while(x < WIDTH)
-    	{
-        	f->Z_re = f->MinRe + x * (f->Re_factor) + f->x_offset;
-			f->Z_im = f->MaxIm - y * (f->Im_factor) + f->y_offset;
+		x = -1;
+		while (x++ < WIDTH)
+		{
+			f->Z_re = f->minre + x * (f->Re_factor) + f->x_offset;
+			f->Z_im = f->maxim - f->y * (f->Im_factor) + f->y_offset;
 			f->n = 0;
 			while (f->n < MAX_ITERATIONS)
 			{
-        		if (SQ(f->Z_re) + SQ(f->Z_im) > 4)
-        			break;
-				f->zim2 = SQ(f->Z_im);
-            	f->Z_im = (2 * f->Z_re * f->Z_im) - 0.3842;
-            	f->Z_re = (SQ(f->Z_re) - f->zim2) - 0.70176;
+				if ((f->Z_re * f->Z_re) + (f->Z_im * f->Z_im) > 4)
+					break ;
+				f->zim2 = f->Z_im * f->Z_im;
+				f->Z_im = (2 * f->Z_re * f->Z_im) - 0.3842;
+				f->Z_re = ((f->Z_re * f->Z_re) - f->zim2) - 0.70176;
 				f->n++;
 			}
-			set_pixel_color(f, x, y, f->n);
-			x++;
-   		}
-		y++;
+			set_pixel_color(f, x, f->y, f->n);
+		}
 	}
 }
 
-void burning_ship(t_fractol *data)
+void	burning_ship(t_fractol *m)
 {
-	/*for(int y = 0; y < HEIGHT; ++y)
+	int	x;
+
+	m->y = -1;
+	while (m->y++ < HEIGHT)
 	{
-		double c_im = data->MaxIm - y * data->Im_factor;
-
-    	for(int x = 0; x < WIDTH; ++x)
-    	{
-        	double c_re = data->MinRe + x * data->Re_factor;
-	
-			double Z_re = c_re, Z_im = c_im;
-			int n = 0;
-        	for(; n < MAX_ITERATIONS; ++n) 
+		m->c_im = (m->maxim - m->y * (m->Im_factor)) + m->y_offset;
+		x = -1;
+		while (x++ < WIDTH)
+		{
+			m->c_re = (m->minre + x * (m->Re_factor)) + m->x_offset;
+			m->Z_re = (m->c_re);
+			m->Z_im = (m->c_im);
+			m->n = 0;
+			while (m->n < MAX_ITERATIONS)
 			{
-			 	if(SQ(Z_re) + SQ(Z_im) > 4)
-                	break;
-				double zim2 = (Z_im);
-				// IMAGINARY => 2(abi)
-            	Z_im = fabs(Z_im * Z_im) + c_im; // increment it by 2(abi)
-				// REAL => a² - b²
-            	Z_re = fabs(zim2) + c_re; // increment it by a² - b²
-            }
-			set_pixel_color(data, x, y, n);
-   		}
-	}*/
+				if ((m->Z_re * m->Z_re) + (m->Z_im * m->Z_im) > 4)
+					break ;
+				m->zim2 = (m->Z_im * m->Z_im);
+				m->Z_im = fabs((2 * m->Z_re * m->Z_im) + m->c_im);
+				m->Z_re = fabs(((m->Z_re * m->Z_re) - m->zim2) + m->c_re);
+				m->n++;
+			}
+			set_pixel_color(m, x, m->y, m->n);
+		}
+	}
 }
-

@@ -6,7 +6,7 @@
 /*   By: jsaintho <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/14 16:32:30 by jsaintho          #+#    #+#             */
-/*   Updated: 2024/05/23 12:15:09 by jsaintho         ###   ########.fr       */
+/*   Updated: 2024/06/14 16:09:50 by jsaintho         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 #include <fractol.h>
@@ -25,30 +25,30 @@
 //		- AA >> 24  (0xAA000000)
 void	set_pixel_color(t_fractol *f, int x, int y, int n)
 {
-		char	*dst;
-		int		offset;
-		int		color;
-		int		pixel_insideSet;
+	char	*dst;
+	int		offset;
+	int		color;
+	int		pixel_insideset;
 
-		pixel_insideSet = 0;
-		if (n == MAX_ITERATIONS)
-			pixel_insideSet = 1;
-		if (x < 0 || y < 0 || y > HEIGHT || x > WIDTH)
-			return ;
-		if(!pixel_insideSet)
-		{
-			if (n > (MAX_ITERATIONS - 1) / 2)
-				color = 0x00000000 + ((n * (0x00FF0000 / ((MAX_ITERATIONS - 1) / 2) )) >> 16);
-			else
-				color = 0x00000000 + ((n *(0xFF000000 / ((MAX_ITERATIONS - 1) / 2) )) >> 24);
-		}else
-		{
-			color = 0x00FFFFFFF;
-		}
-		offset = (y * f->line_length + x * (f->bits_per_pixel / 8));
-		dst = f->buf + (offset);
-		*(unsigned int*)dst = color;
+	pixel_insideset = 0;
+	if (n == MAX_ITERATIONS)
+		pixel_insideset = 1;
+	if (x < 0 || y < 0 || y > HEIGHT || x > WIDTH)
+		return ;
+	if (!pixel_insideset)
+	{
+		if (n > (MAX_ITERATIONS - 1) / 2)
+			color = ((n * (0x00FF0000 / ((MAX_ITERATIONS - 1) / 2))) >> 16);
+		else
+			color = ((n * (0xFF000000 / ((MAX_ITERATIONS - 1) / 2))) >> 24);
+	}
+	else
+		color = 0xBBBBBBBB;
+	offset = (y * f->linelen + x * (f->bpp / 8));
+	dst = f->buf + (offset);
+	*(unsigned int *)dst = color;
 }
+
 //  ========================================================================
 //                                 INIT IMG
 //  ========================================================================
@@ -57,56 +57,84 @@ void	set_pixel_color(t_fractol *f, int x, int y, int n)
 //  - Assign f->buf to modify pixel by pixel from it
 static void	init_img(t_fractol *f)
 {
-	f->MinRe = -2.0;
-	f->MaxRe = 2.0;
-	f->MinIm = -1.2;
-	f->MaxIm =  f->MinIm + (f->MaxRe - f->MinRe) * HEIGHT/WIDTH;
-	f->Re_factor = (f->MaxRe - f->MinRe) / (WIDTH - 1);
-	f->Im_factor = (f->MaxIm - f->MinIm) / (HEIGHT - 1);
+	f->minre = -2.0;
+	f->maxre = 2.0;
+	f->minim = -1.5;
+	f->maxim = f->minim + (f->maxre - f->minre) * HEIGHT / WIDTH;
+	f->zm = 0.005;
+	if (ft_strncmp(f->fractal_, "burningship", 11) == 0)
+	{
+		f->minim = -0.1;
+		f->maxim = 0.1;
+		f->minre = -1.85;
+		f->maxre = -1.65;
+		f->zm = 0.00005;
+	}
+	f->Re_factor = (f->maxre - f->minre) / (WIDTH - 1);
+	f->Im_factor = (f->maxim - f->minim) / (HEIGHT - 1);
 	f->x_offset = 0;
 	f->y_offset = 0;
-		
 	f->img = mlx_new_image(f->mlx, WIDTH, HEIGHT);
 	if (!(f->img))
 		clean_exit(f);
-
-	f->buf = mlx_get_data_addr(f->img, &f->bits_per_pixel, 
-			&f->line_length, &f->endian);
+	f->buf = mlx_get_data_addr(f->img,
+			&f->bpp, &f->linelen, &f->endian);
 }
+
 //  =====================================================
 //   					      INIT
 //  =====================================================
 //  Creates a new MLX instance, a new window and set
 //  the fractol data structure with default values.
-void	init(t_fractol *f)
+int	init_render(t_fractol *f)
 {
 	f->mlx = mlx_init();
 	if (!f->mlx)
+	{
 		clean_exit(f);
+		return (-1);
+	}
 	f->win = mlx_new_window(f->mlx, WIDTH, HEIGHT, "Fractol");
 	if (!f->win)
+	{
 		clean_exit(f);
-
+		return (-1);
+	}
 	init_img(f);
-	//printf("[mlx window] %dx%d lineLength=%d  buf=%p  bpp=%d \n\n\n", WIDTH, HEIGHT, f->line_length, f->buf, f->bits_per_pixel);
+	re_render(f);
+	return (1);
 }
 
-int	render(t_fractol *f)
+//  =====================================================
+//   					  RE-RENDER
+//  =====================================================
+//  Rewrite pixels buffer and re-put image back to MLX Window
+void	re_render(t_fractol *f)
 {
 	if (ft_strncmp(f->fractal_, "mandelbrot", 10) == 0)
 		mandelbrot(f);
-	else if (ft_strncmp(f->fractal_, "julia", 5) == 0)
+	if (ft_strncmp(f->fractal_, "julia", 5) == 0)
 		julia(f);
-	/*else if (ft_strncmp(f->fractal_, "newton", 6) == 0)
-		newton(f);*/
-	else if (ft_strncmp(f->fractal_, "ship", 4) == 0)
+	if (ft_strncmp(f->fractal_, "burningship", 11) == 0)
 		burning_ship(f);
-	else
-	{
-		write(1, "Wrong Parameter !\n", 18); 
-		write(1, "Fractals available : [julia | newton | ship | mandelbrot] \n", 60);
-		return 0;
-	}
 	mlx_put_image_to_window(f->mlx, f->win, f->img, 0, 0);
-	return 1;
+}
+
+// ========================================================
+//						CHECK PARAMS
+// ========================================================
+int	check_params(char *s)
+{
+	int	v;
+
+	v = 0;
+	if (ft_strncmp(s, "mandelbrot", 10) == 0)
+		v = 1;
+	if (ft_strncmp(s, "julia", 5) == 0)
+		v = 1;
+	if (ft_strncmp(s, "burningship", 11) == 0)
+		v = 1;
+	if (v == 0)
+		return (-1);
+	return (v);
 }

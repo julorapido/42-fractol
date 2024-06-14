@@ -42,7 +42,7 @@ $(LIBFT):
 	@make -C $(LIBFT_DIR)
 
 $(NAME): $(SRCS_OBJ)
-	gcc $(CFLAGS) $(SRCS_) $(INCLUDES) -o $(NAME) $(SRCS_OBJ) $(LIBFT) \
+	gcc $(CFLAGS) $(SRCS_) $(INCLUDES) -lm -o $(NAME) $(SRCS_OBJ) $(LIBFT) \
 		$(MLX_FLAGS)
 
 clean:
@@ -52,5 +52,7 @@ clean:
 
 fclean: clean
 	rm $(NAME)
+
+re : fclean all
 
 .PHONY: clean all
