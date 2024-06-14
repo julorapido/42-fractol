@@ -3,13 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   draw.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jsaintho <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: jsaintho <jsaintho@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/15 12:42:04 by jsaintho          #+#    #+#             */
-/*   Updated: 2024/06/14 16:23:42 by jsaintho         ###   ########.fr       */
+/*   Updated: 2024/06/14 16:41:18 by jsaintho         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
-#include <fractol.h>
+
+#include "fractol.h"
 #include <stdlib.h>
 //  ty : http://warp.povusers.org/Mandelbrot/
 //  ---------------------------------------
@@ -59,21 +60,21 @@ void	mandelbrot(t_fractol *m)
 	m->y = -1;
 	while (m->y++ < HEIGHT)
 	{
-		m->c_im = (m->maxim - m->y * (m->Im_factor)) + m->y_offset;
+		m->c_im = (m->maxim - m->y * (m->im_factor)) + m->y_offset;
 		x = -1;
 		while (x++ < WIDTH)
 		{
-			m->c_re = (m->minre + x * (m->Re_factor)) + m->x_offset;
-			m->Z_re = m->c_re;
-			m->Z_im = m->c_im;
+			m->c_re = (m->minre + x * (m->re_factor)) + m->x_offset;
+			m->z_re = m->c_re;
+			m->z_im = m->c_im;
 			m->n = 0;
 			while (m->n < MAX_ITERATIONS)
 			{
-				if ((m->Z_re * m->Z_re) + (m->Z_im * m->Z_im) > 4)
+				if ((m->z_re * m->z_re) + (m->z_im * m->z_im) > 4)
 					break ;
-				m->zim2 = m->Z_im * m->Z_im;
-				m->Z_im = (2 * m->Z_re * m->Z_im) + m->c_im;
-				m->Z_re = ((m->Z_re * m->Z_re) - m->zim2) + m->c_re;
+				m->zim2 = m->z_im * m->z_im;
+				m->z_im = (2 * m->z_re * m->z_im) + m->c_im;
+				m->z_re = ((m->z_re * m->z_re) - m->zim2) + m->c_re;
 				m->n++;
 			}
 			set_pixel_color(m, x, m->y, m->n);
@@ -91,16 +92,16 @@ void	julia(t_fractol *f)
 		x = -1;
 		while (x++ < WIDTH)
 		{
-			f->Z_re = f->minre + x * (f->Re_factor) + f->x_offset;
-			f->Z_im = f->maxim - f->y * (f->Im_factor) + f->y_offset;
+			f->z_re = f->minre + x * (f->re_factor) + f->x_offset;
+			f->z_im = f->maxim - f->y * (f->im_factor) + f->y_offset;
 			f->n = 0;
 			while (f->n < MAX_ITERATIONS)
 			{
-				if ((f->Z_re * f->Z_re) + (f->Z_im * f->Z_im) > 4)
+				if ((f->z_re * f->z_re) + (f->z_im * f->z_im) > 4)
 					break ;
-				f->zim2 = f->Z_im * f->Z_im;
-				f->Z_im = (2 * f->Z_re * f->Z_im) - 0.3842;
-				f->Z_re = ((f->Z_re * f->Z_re) - f->zim2) - 0.70176;
+				f->zim2 = f->z_im * f->z_im;
+				f->z_im = (2 * f->z_re * f->z_im) - 0.3842;
+				f->z_re = ((f->z_re * f->z_re) - f->zim2) - 0.70176;
 				f->n++;
 			}
 			set_pixel_color(f, x, f->y, f->n);
@@ -115,21 +116,21 @@ void	burning_ship(t_fractol *m)
 	m->y = -1;
 	while (m->y++ < HEIGHT)
 	{
-		m->c_im = (m->maxim - m->y * (m->Im_factor)) + m->y_offset;
+		m->c_im = (m->maxim - m->y * (m->im_factor)) + m->y_offset;
 		x = -1;
 		while (x++ < WIDTH)
 		{
-			m->c_re = (m->minre + x * (m->Re_factor)) + m->x_offset;
-			m->Z_re = (m->c_re);
-			m->Z_im = (m->c_im);
+			m->c_re = (m->minre + x * (m->re_factor)) + m->x_offset;
+			m->z_re = (m->c_re);
+			m->z_im = (m->c_im);
 			m->n = 0;
 			while (m->n < MAX_ITERATIONS)
 			{
-				if ((m->Z_re * m->Z_re) + (m->Z_im * m->Z_im) > 4)
+				if ((m->z_re * m->z_re) + (m->z_im * m->z_im) > 4)
 					break ;
-				m->zim2 = (m->Z_im * m->Z_im);
-				m->Z_im = fabs((2 * m->Z_re * m->Z_im) + m->c_im);
-				m->Z_re = fabs(((m->Z_re * m->Z_re) - m->zim2) + m->c_re);
+				m->zim2 = (m->z_im * m->z_im);
+				m->z_im = fabs((2 * m->z_re * m->z_im) + m->c_im);
+				m->z_re = fabs(((m->z_re * m->z_re) - m->zim2) + m->c_re);
 				m->n++;
 			}
 			set_pixel_color(m, x, m->y, m->n);

@@ -3,13 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   window.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jsaintho <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: jsaintho <jsaintho@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/14 16:32:30 by jsaintho          #+#    #+#             */
-/*   Updated: 2024/06/14 16:09:50 by jsaintho         ###   ########.fr       */
+/*   Updated: 2024/06/14 16:41:01 by jsaintho         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
-#include <fractol.h>
+
+#include "fractol.h"
 #include <stdio.h>
 
 //  =======================================================================
@@ -70,8 +71,8 @@ static void	init_img(t_fractol *f)
 		f->maxre = -1.65;
 		f->zm = 0.00005;
 	}
-	f->Re_factor = (f->maxre - f->minre) / (WIDTH - 1);
-	f->Im_factor = (f->maxim - f->minim) / (HEIGHT - 1);
+	f->re_factor = (f->maxre - f->minre) / (WIDTH - 1);
+	f->im_factor = (f->maxim - f->minim) / (HEIGHT - 1);
 	f->x_offset = 0;
 	f->y_offset = 0;
 	f->img = mlx_new_image(f->mlx, WIDTH, HEIGHT);

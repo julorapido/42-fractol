@@ -6,7 +6,7 @@
 /*   By: jsaintho <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/14 16:26:40 by jsaintho          #+#    #+#             */
-/*   Updated: 2024/06/14 16:26:41 by jsaintho         ###   ########.fr       */
+/*   Updated: 2024/06/14 16:40:37 by jsaintho         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,17 +24,6 @@
 # define HEIGHT 960
 # define MAX_ITERATIONS 40
 
-/*  Functions */
-/*# define DRAW_COLORED_PIXEL(data, a, n) a ? 					\
-	(set_pixel_color(data, x, y, 0x00000000 + 					\
-			(n > (MAX_ITERATIONS - 1) / 2 ?						\
-			(n * (0x00FF0000 / ((MAX_ITERATIONS - 1) / 2) )) >> 16\
-				:												\
-			(n *(0xFF000000 / ((MAX_ITERATIONS - 1) / 2) )) >> 24\
-		)														\
-	)) : (set_pixel_color(data, x, y, 0xFFFFFFFF))				\
-*/
-
 typedef struct s_fractol
 {
 	void		*mlx;
@@ -49,15 +38,15 @@ typedef struct s_fractol
 	int			bpp;
 	int			linelen;
 	int			endian;
-	double		Im_factor;
-	double		Re_factor;
+	double		im_factor;
+	double		re_factor;
 	char		*fractal_;
 	double		x_offset;
 	double		y_offset;
-	double	 	Z_im;
-	double		Z_re;
+	double		z_im;
+	double		z_re;
 	double		c_re;
-	double 		c_im;
+	double		c_im;
 	int			n;
 	int			y;
 	double		zm;

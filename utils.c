@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   utils.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jsaintho <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: jsaintho <jsaintho@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/17 10:42:45 by jsaintho          #+#    #+#             */
-/*   Updated: 2024/06/14 16:05:08 by jsaintho         ###   ########.fr       */
+/*   Updated: 2024/06/14 16:39:38 by jsaintho         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 #include "fractol.h"
@@ -24,13 +24,13 @@ int	k_hook(int k_code, t_fractol *f)
 	else
 	{
 		if (k_code == K_UP)
-			f->y_offset += (2 * f->Re_factor) * (WIDTH / HEIGHT);
+			f->y_offset += (2 * f->re_factor) * (WIDTH / HEIGHT);
 		if (k_code == K_DOWN)
-			f->y_offset -= (2 * f->Re_factor) * (WIDTH / HEIGHT);
+			f->y_offset -= (2 * f->re_factor) * (WIDTH / HEIGHT);
 		if (k_code == K_LEFT)
-			f->x_offset -= (2 * f->Re_factor) * (WIDTH / HEIGHT);
+			f->x_offset -= (2 * f->re_factor) * (WIDTH / HEIGHT);
 		if (k_code == K_RIGHT)
-			f->x_offset += (2 * f->Re_factor) * (WIDTH / HEIGHT);
+			f->x_offset += (2 * f->re_factor) * (WIDTH / HEIGHT);
 		re_render(f);
 	}
 	return (0);
@@ -70,8 +70,8 @@ int	hook_mousedown(int button, int x, int y, t_fractol *f)
 		zoom(x, y, f, 0.98);
 	else if (button == 5)
 		zoom(x, y, f, 1 / 0.98);
-	f->Re_factor = (f->maxre - f->minre) / (WIDTH - 1);
-	f->Im_factor = (f->maxim - f->minim) / (HEIGHT - 1);
+	f->re_factor = (f->maxre - f->minre) / (WIDTH - 1);
+	f->im_factor = (f->maxim - f->minim) / (HEIGHT - 1);
 	re_render(f);
 	return (0);
 }
