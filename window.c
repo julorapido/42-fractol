@@ -6,7 +6,7 @@
 /*   By: jsaintho <jsaintho@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/14 16:32:30 by jsaintho          #+#    #+#             */
-/*   Updated: 2024/06/14 16:41:01 by jsaintho         ###   ########.fr       */
+/*   Updated: 2024/07/19 18:49:50 by jsaintho         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,13 +63,15 @@ static void	init_img(t_fractol *f)
 	f->minim = -1.5;
 	f->maxim = f->minim + (f->maxre - f->minre) * HEIGHT / WIDTH;
 	f->zm = 0.005;
+	f->zm_x = 0.01;
 	if (ft_strncmp(f->fractal_, "burningship", 11) == 0)
 	{
 		f->minim = -0.1;
 		f->maxim = 0.1;
 		f->minre = -1.85;
 		f->maxre = -1.65;
-		f->zm = 0.00005;
+		f->zm = 0.0005;
+		f->zm_x = 0.001;
 	}
 	f->re_factor = (f->maxre - f->minre) / (WIDTH - 1);
 	f->im_factor = (f->maxim - f->minim) / (HEIGHT - 1);
@@ -112,12 +114,28 @@ int	init_render(t_fractol *f)
 //  Rewrite pixels buffer and re-put image back to MLX Window
 void	re_render(t_fractol *f)
 {
-	if (ft_strncmp(f->fractal_, "mandelbrot", 10) == 0)
-		mandelbrot(f);
-	if (ft_strncmp(f->fractal_, "julia", 5) == 0)
-		julia(f);
-	if (ft_strncmp(f->fractal_, "burningship", 11) == 0)
-		burning_ship(f);
+	int			i;
+	i = 0;
+
+	while(i < NB_THREADS)
+	{
+
+		f->render->args[i].id = i;
+		f->render->args[i].frtcl = f;
+		//if (ft_strncmp(f->fractal_, "mandelbrot", 10) == 0)
+		//	pthread_create(&threads_ar[i], NULL, mandelbrot, &(arg_arr[i])); // mandelbrot(f)
+		if (ft_strncmp(f->fractal_, "julia", 5) == 0)
+			pthread_create(((f->render)->threads) + i, NULL, julia, &((f->render)->args[i]));	// julia(f)
+		//if (ft_strncmp(f->fractal_, "burningship", 11) == 0)
+		//	pthread_create(&threads_ar[i]) burning_ship(f);
+		i++;
+	}
+	i = 1;
+	while(i < NB_THREADS)
+	{
+		pthread_join(threads_ar[i], NULL);
+		i++;
+	}
 	mlx_put_image_to_window(f->mlx, f->win, f->img, 0, 0);
 }
 

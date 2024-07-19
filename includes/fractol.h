@@ -6,7 +6,7 @@
 /*   By: jsaintho <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/14 16:26:40 by jsaintho          #+#    #+#             */
-/*   Updated: 2024/06/14 16:40:37 by jsaintho         ###   ########.fr       */
+/*   Updated: 2024/07/19 18:48:01 by jsaintho         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,11 +18,27 @@
 # include <stdio.h>
 # include <math.h>
 # include <stdlib.h>
+# include <pthread.h>
 
 /*  Window Settings	*/
 # define WIDTH 1280
 # define HEIGHT 960
 # define MAX_ITERATIONS 40
+
+/* Multi threading */
+# define NB_THREADS 8
+
+typedef struct		s_thread
+{
+	int				id;
+	t_fractol		*frctl;
+}					t_thread;
+
+typedef struct		s_render
+{
+	pthread_t		threads[THREADS];
+	t_thread		args[THREADS];
+}					t_render;
 
 typedef struct s_fractol
 {
@@ -50,7 +66,9 @@ typedef struct s_fractol
 	int			n;
 	int			y;
 	double		zm;
+	double		zm_x;
 	double		zim2;
+	t_render	render_;
 }	t_fractol;
 
 // Events
@@ -70,7 +88,7 @@ void	set_pixel_color(t_fractol *t, int x, int y, int n);
 
 //  Fractals
 void	mandelbrot(t_fractol *t);
-void	julia(t_fractol *t);
+void	*julia(void *t);
 void	burning_ship(t_fractol *t);
 
 #endif

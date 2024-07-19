@@ -6,7 +6,7 @@
 /*   By: jsaintho <jsaintho@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/15 12:42:04 by jsaintho          #+#    #+#             */
-/*   Updated: 2024/06/14 16:41:18 by jsaintho         ###   ########.fr       */
+/*   Updated: 2024/07/19 18:50:13 by jsaintho         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -82,12 +82,14 @@ void	mandelbrot(t_fractol *m)
 	}
 }
 
-void	julia(t_fractol *f)
+void	*julia(void	*z)//void	julia(t_fractol *f)
 {
 	int	x;
+	t_arg	*t = (t_arg *) z;
 
-	f->y = -1;
-	while (f->y++ < HEIGHT)
+
+	return NULL;
+	while (f->y++ < (HEIGHT / NB_THREADS))
 	{
 		x = -1;
 		while (x++ < WIDTH)
@@ -104,9 +106,10 @@ void	julia(t_fractol *f)
 				f->z_re = ((f->z_re * f->z_re) - f->zim2) - 0.70176;
 				f->n++;
 			}
-			set_pixel_color(f, x, f->y, f->n);
+			set_pixel_color(t->t_f, x, f->y, f->n);
 		}
 	}
+	return (NULL);
 }
 
 void	burning_ship(t_fractol *m)

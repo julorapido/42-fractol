@@ -6,7 +6,7 @@
 /*   By: jsaintho <jsaintho@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/17 10:42:45 by jsaintho          #+#    #+#             */
-/*   Updated: 2024/06/14 16:39:38 by jsaintho         ###   ########.fr       */
+/*   Updated: 2024/06/17 12:01:11 by jsaintho         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 #include "fractol.h"
@@ -54,11 +54,11 @@ void	zoom(int x, int y, t_fractol *f, double zoom)
 		return ;
 	y -= HEIGHT / 2;
 	x -= WIDTH / 2;
-	f->y_offset -= ((0.01 * f->maxre) * (y * 0.01) * (WIDTH / HEIGHT));
+	f->y_offset -= ((f->zm_x * f->maxre) * (y * f->zm_x) * (WIDTH / HEIGHT));
 	if (zoom > 0)
-		f->x_offset += ((f->zm * f->maxre) * (x * 0.01) * (WIDTH / HEIGHT));
+		f->x_offset += ((f->zm * f->maxre) * (x * f->zm_x) * (WIDTH / HEIGHT));
 	else
-		f->x_offset -= ((f->zm * f->maxre) * (x * 0.01) * (WIDTH / HEIGHT));
+		f->x_offset -= ((f->zm * f->maxre) * (x * f->zm_x) * (WIDTH / HEIGHT));
 }
 
 // ==================================
