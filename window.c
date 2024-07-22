@@ -6,7 +6,7 @@
 /*   By: jsaintho <jsaintho@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/14 16:32:30 by jsaintho          #+#    #+#             */
-/*   Updated: 2024/07/22 15:19:26 by jsaintho         ###   ########.fr       */
+/*   Updated: 2024/07/22 16:19:11 by jsaintho         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -129,7 +129,7 @@ void	re_render(t_fractol *f)
 		i++;
 	}
 	i = 0;
-	while(i < NB_THREADS)
+	while (i < NB_THREADS)
 	{
 		pthread_join(r->threads[i], NULL);
 		i++;

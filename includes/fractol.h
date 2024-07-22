@@ -6,7 +6,7 @@
 /*   By: jsaintho <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/14 16:26:40 by jsaintho          #+#    #+#             */
-/*   Updated: 2024/07/22 15:21:18 by jsaintho         ###   ########.fr       */
+/*   Updated: 2024/07/22 15:40:14 by jsaintho         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,27 +57,27 @@ struct s_fractol
 	void		*img;
 	char		*buf;
 	int			color;
-	double		minim;
-	double		maxim;
-	double		minre;
-	double		maxre;
+	long double		minim;
+	long double		maxim;
+	long double		minre;
+	long double		maxre;
 	int			bpp;
 	int			linelen;
 	int			endian;
-	double		im_factor;
-	double		re_factor;
+	long double		im_factor;
+	long double		re_factor;
 	char		*fractal_;
-	double		x_offset;
-	double		y_offset;
-	double		z_im;
-	double		z_re;
-	double		c_re;
-	double		c_im;
-	int			n;
-	int			y;
-	double		zm;
-	double		zm_x;
-	double		zim2;
+	long double		x_offset;
+	long double		y_offset;
+	long double		z_im;
+	long double		z_re;
+	long double		c_re;
+	long double		c_im;
+	long			n;
+	long			y;
+	long double		zm;
+	long double		zm_x;
+	long double		zim2;
 	t_render	render_;
 };
 

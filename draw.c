@@ -6,7 +6,7 @@
 /*   By: jsaintho <jsaintho@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/15 12:42:04 by jsaintho          #+#    #+#             */
-/*   Updated: 2024/07/22 15:28:34 by jsaintho         ###   ########.fr       */
+/*   Updated: 2024/07/22 16:19:00 by jsaintho         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -82,10 +82,10 @@ static void	mandelbrot(int thread_id, t_fractol *m)
 	}
 }
 
-static void	*julia(int thread_id, t_fractol *f)
+static void	julia(int thread_id, t_fractol *f)
 {
-	int	x;
-	
+	long	x;
+
 	f->y = (HEIGHT / NB_THREADS) * thread_id;
 	while (f->y++ < (HEIGHT / NB_THREADS) * (thread_id + 1))
 	{
@@ -106,8 +106,7 @@ static void	*julia(int thread_id, t_fractol *f)
 			}
 			set_pixel_color(f, x, f->y, f->n);
 		}
-	}
-	return (NULL);
+	}	
 }
 
 static void	burning_ship(int thread_id, t_fractol *m)
@@ -144,11 +143,9 @@ void	*job(void *arg)
 	mutex_data	*md;
 	char		*f_name;
 
-	md = (mutex_data*) arg;
+	md = (mutex_data *) arg;
 	f_name = ((md->data[(*md)._id_]).frctl)->fractal_;
-	// Vérouillage du mutex
 	pthread_mutex_lock(&(*md).mutex);
-	// Modificiation du mutex
 	if (ft_strncmp(f_name, "julia", 5) == 0)
 		julia((md->data[(*md)._id_]).id, (md->data[(*md)._id_]).frctl);
 	if (ft_strncmp(f_name, "mandelbrot", 10) == 0)
@@ -156,7 +153,6 @@ void	*job(void *arg)
 	if (ft_strncmp(f_name, "burningship", 11) == 0)
 		burning_ship(md->data[(*md)._id_].id, (md->data[(*md)._id_]).frctl);
 	(*md)._id_++;
-	// Dévérouillage du mutex
 	pthread_mutex_unlock(&(*md).mutex);
 	pthread_exit(NULL);
 }
