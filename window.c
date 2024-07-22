@@ -6,7 +6,7 @@
 /*   By: jsaintho <jsaintho@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/14 16:32:30 by jsaintho          #+#    #+#             */
-/*   Updated: 2024/07/22 16:19:11 by jsaintho         ###   ########.fr       */
+/*   Updated: 2024/07/22 16:56:29 by jsaintho         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,12 +24,12 @@
 //		- GG >> 8   (0x0000FF00)
 //		- RR >> 16  (0x00FF0000)
 //		- AA >> 24  (0xAA000000)
-void	set_pixel_color(t_fractol *f, int x, int y, int n)
+void	set_pixel_color(t_fractol *f, long x, long y, long n)
 {
 	char	*dst;
-	int		offset;
-	int		color;
-	int		pixel_insideset;
+	long	offset;
+	long	color;
+	long	pixel_insideset;
 
 	pixel_insideset = 0;
 	if (n == MAX_ITERATIONS)
@@ -141,7 +141,7 @@ void	re_render(t_fractol *f)
 // ========================================================
 //						CHECK PARAMS
 // ========================================================
-int	check_params(char *s)
+int	check_params(t_fractol *f, char *s)
 {
 	int	v;
 
@@ -149,9 +149,10 @@ int	check_params(char *s)
 	if (ft_strncmp(s, "mandelbrot", 10) == 0)
 		v = 1;
 	if (ft_strncmp(s, "julia", 5) == 0)
-		v = 1;
+		v = 2;
 	if (ft_strncmp(s, "burningship", 11) == 0)
-		v = 1;
+		v = 3;
+	f->f_mode = v;
 	if (v == 0)
 		return (-1);
 	return (v);

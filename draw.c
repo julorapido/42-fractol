@@ -6,7 +6,7 @@
 /*   By: jsaintho <jsaintho@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/15 12:42:04 by jsaintho          #+#    #+#             */
-/*   Updated: 2024/07/22 16:19:00 by jsaintho         ###   ########.fr       */
+/*   Updated: 2024/07/22 17:07:28 by jsaintho         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,7 +55,7 @@
 
 static void	mandelbrot(int thread_id, t_fractol *m)
 {
-	int	x;
+	long	x;
 
 	m->y = (HEIGHT / NB_THREADS) * thread_id;
 	while (m->y++ < (HEIGHT / NB_THREADS) * (thread_id + 1))
@@ -111,7 +111,7 @@ static void	julia(int thread_id, t_fractol *f)
 
 static void	burning_ship(int thread_id, t_fractol *m)
 {
-	int	x;
+	long	x;
 
 	m->y = (HEIGHT / NB_THREADS) * thread_id;
 	while (m->y++ < (HEIGHT / NB_THREADS) * (thread_id + 1))
@@ -129,8 +129,8 @@ static void	burning_ship(int thread_id, t_fractol *m)
 				if ((m->z_re * m->z_re) + (m->z_im * m->z_im) > 4)
 					break ;
 				m->zim2 = (m->z_im * m->z_im);
-				m->z_im = fabs((2 * m->z_re * m->z_im) + m->c_im);
-				m->z_re = fabs(((m->z_re * m->z_re) - m->zim2) + m->c_re);
+				m->z_im = fabsl((2 * m->z_re * m->z_im) + m->c_im);
+				m->z_re = fabsl(((m->z_re * m->z_re) - m->zim2) + m->c_re);
 				m->n++;
 			}
 			set_pixel_color(m, x, m->y, m->n);
@@ -140,17 +140,17 @@ static void	burning_ship(int thread_id, t_fractol *m)
 
 void	*job(void *arg)
 {
-	mutex_data	*md;
-	char		*f_name;
+	t_mutex_data	*md;
+	t_fractol	*f;
 
-	md = (mutex_data *) arg;
-	f_name = ((md->data[(*md)._id_]).frctl)->fractal_;
+	md = (t_mutex_data *) arg;
+	f = (md->data[(*md)._id_]).frctl;
 	pthread_mutex_lock(&(*md).mutex);
-	if (ft_strncmp(f_name, "julia", 5) == 0)
+	if (f->f_mode == 2)
 		julia((md->data[(*md)._id_]).id, (md->data[(*md)._id_]).frctl);
-	if (ft_strncmp(f_name, "mandelbrot", 10) == 0)
+	if (f->f_mode == 1)
 		mandelbrot((md->data[(*md)._id_]).id, (md->data[(*md)._id_]).frctl);
-	if (ft_strncmp(f_name, "burningship", 11) == 0)
+	if (f->f_mode == 3)
 		burning_ship(md->data[(*md)._id_].id, (md->data[(*md)._id_]).frctl);
 	(*md)._id_++;
 	pthread_mutex_unlock(&(*md).mutex);

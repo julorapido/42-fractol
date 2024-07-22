@@ -6,7 +6,7 @@
 /*   By: jsaintho <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/14 10:35:22 by jsaintho          #+#    #+#             */
-/*   Updated: 2024/06/14 15:51:29 by jsaintho         ###   ########.fr       */
+/*   Updated: 2024/07/22 16:55:52 by jsaintho         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 #include <fractol.h>
@@ -27,7 +27,7 @@ int	main(int argc, char **argv)
 	t_fractol	*f;
 
 	f = ((t_fractol *) malloc(1 * sizeof(t_fractol)));
-	if (argc < 2 || argc > 2 || check_params(argv[1]) == -1)
+	if (argc < 2 || argc > 2 || check_params(f, argv[1]) == -1)
 	{
 		write(1, "Please Run the program with the Fractal Set Name\n", 50);
 		write(1, "Sets available : [Julia, Mandelbrot, BurningShip]\n", 51);

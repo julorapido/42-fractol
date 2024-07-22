@@ -6,7 +6,7 @@
 /*   By: jsaintho <jsaintho@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/17 10:42:45 by jsaintho          #+#    #+#             */
-/*   Updated: 2024/06/17 12:01:11 by jsaintho         ###   ########.fr       */
+/*   Updated: 2024/07/22 16:59:14 by jsaintho         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 #include "fractol.h"
@@ -39,10 +39,10 @@ int	k_hook(int k_code, t_fractol *f)
 // =================================
 //				ZOOM
 // =================================
-void	zoom(int x, int y, t_fractol *f, double zoom)
+void	zoom(long x, long y, t_fractol *f, long double zoom)
 {
-	double	center_re;
-	double	center_im;
+	long double	center_re;
+	long double	center_im;
 
 	center_re = f->minre - f->maxre;
 	center_im = f->maxim - f->minim;
@@ -64,7 +64,7 @@ void	zoom(int x, int y, t_fractol *f, double zoom)
 // ==================================
 //          MOUSE BUTTON DOWN
 // ==================================
-int	hook_mousedown(int button, int x, int y, t_fractol *f)
+int	hook_mousedown(int button, long x, long y, t_fractol *f)
 {
 	if (button == 4)
 		zoom(x, y, f, 0.98);
