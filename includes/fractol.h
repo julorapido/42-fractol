@@ -6,7 +6,7 @@
 /*   By: jsaintho <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/14 16:26:40 by jsaintho          #+#    #+#             */
-/*   Updated: 2024/07/19 18:48:01 by jsaintho         ###   ########.fr       */
+/*   Updated: 2024/07/22 15:21:18 by jsaintho         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,10 +23,12 @@
 /*  Window Settings	*/
 # define WIDTH 1280
 # define HEIGHT 960
-# define MAX_ITERATIONS 40
+# define MAX_ITERATIONS 30
 
 /* Multi threading */
-# define NB_THREADS 8
+# define NB_THREADS 4
+
+typedef struct		s_fractol t_fractol;
 
 typedef struct		s_thread
 {
@@ -34,13 +36,21 @@ typedef struct		s_thread
 	t_fractol		*frctl;
 }					t_thread;
 
+typedef struct	mutex_data
+{
+	t_thread		data[NB_THREADS];
+	int				_id_;
+	pthread_mutex_t	mutex;
+}				mutex_data;
+
 typedef struct		s_render
 {
-	pthread_t		threads[THREADS];
-	t_thread		args[THREADS];
+	pthread_t		threads[NB_THREADS];
+	//t_thread		args[NB_THREADS];
+	mutex_data		mutex_d_;
 }					t_render;
 
-typedef struct s_fractol
+struct s_fractol
 {
 	void		*mlx;
 	void		*win;
@@ -69,7 +79,7 @@ typedef struct s_fractol
 	double		zm_x;
 	double		zim2;
 	t_render	render_;
-}	t_fractol;
+};
 
 // Events
 void	key_close(int n, t_fractol *t);
@@ -85,10 +95,11 @@ int		check_params(char *s);
 
 // Draw funcs
 void	set_pixel_color(t_fractol *t, int x, int y, int n);
+void	*job(void *arg);
 
 //  Fractals
-void	mandelbrot(t_fractol *t);
-void	*julia(void *t);
-void	burning_ship(t_fractol *t);
+// void	mandelbrot(t_fractol *t);
+// void	*julia(t_thread *t);
+// void	burning_ship(t_fractol *t);
 
 #endif

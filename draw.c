@@ -6,7 +6,7 @@
 /*   By: jsaintho <jsaintho@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/15 12:42:04 by jsaintho          #+#    #+#             */
-/*   Updated: 2024/07/19 18:50:13 by jsaintho         ###   ########.fr       */
+/*   Updated: 2024/07/22 15:28:34 by jsaintho         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,12 +53,12 @@
 //  is greater than Hausdorff dimension exact value assiociated to the fractal
 //  -- If (is greater) value will escape the set and go to infinite 
 
-void	mandelbrot(t_fractol *m)
+static void	mandelbrot(int thread_id, t_fractol *m)
 {
 	int	x;
 
-	m->y = -1;
-	while (m->y++ < HEIGHT)
+	m->y = (HEIGHT / NB_THREADS) * thread_id;
+	while (m->y++ < (HEIGHT / NB_THREADS) * (thread_id + 1))
 	{
 		m->c_im = (m->maxim - m->y * (m->im_factor)) + m->y_offset;
 		x = -1;
@@ -82,14 +82,12 @@ void	mandelbrot(t_fractol *m)
 	}
 }
 
-void	*julia(void	*z)//void	julia(t_fractol *f)
+static void	*julia(int thread_id, t_fractol *f)
 {
 	int	x;
-	t_arg	*t = (t_arg *) z;
-
-
-	return NULL;
-	while (f->y++ < (HEIGHT / NB_THREADS))
+	
+	f->y = (HEIGHT / NB_THREADS) * thread_id;
+	while (f->y++ < (HEIGHT / NB_THREADS) * (thread_id + 1))
 	{
 		x = -1;
 		while (x++ < WIDTH)
@@ -106,18 +104,18 @@ void	*julia(void	*z)//void	julia(t_fractol *f)
 				f->z_re = ((f->z_re * f->z_re) - f->zim2) - 0.70176;
 				f->n++;
 			}
-			set_pixel_color(t->t_f, x, f->y, f->n);
+			set_pixel_color(f, x, f->y, f->n);
 		}
 	}
 	return (NULL);
 }
 
-void	burning_ship(t_fractol *m)
+static void	burning_ship(int thread_id, t_fractol *m)
 {
 	int	x;
 
-	m->y = -1;
-	while (m->y++ < HEIGHT)
+	m->y = (HEIGHT / NB_THREADS) * thread_id;
+	while (m->y++ < (HEIGHT / NB_THREADS) * (thread_id + 1))
 	{
 		m->c_im = (m->maxim - m->y * (m->im_factor)) + m->y_offset;
 		x = -1;
@@ -139,4 +137,26 @@ void	burning_ship(t_fractol *m)
 			set_pixel_color(m, x, m->y, m->n);
 		}
 	}
+}
+
+void	*job(void *arg)
+{
+	mutex_data	*md;
+	char		*f_name;
+
+	md = (mutex_data*) arg;
+	f_name = ((md->data[(*md)._id_]).frctl)->fractal_;
+	// Vérouillage du mutex
+	pthread_mutex_lock(&(*md).mutex);
+	// Modificiation du mutex
+	if (ft_strncmp(f_name, "julia", 5) == 0)
+		julia((md->data[(*md)._id_]).id, (md->data[(*md)._id_]).frctl);
+	if (ft_strncmp(f_name, "mandelbrot", 10) == 0)
+		mandelbrot((md->data[(*md)._id_]).id, (md->data[(*md)._id_]).frctl);
+	if (ft_strncmp(f_name, "burningship", 11) == 0)
+		burning_ship(md->data[(*md)._id_].id, (md->data[(*md)._id_]).frctl);
+	(*md)._id_++;
+	// Dévérouillage du mutex
+	pthread_mutex_unlock(&(*md).mutex);
+	pthread_exit(NULL);
 }
