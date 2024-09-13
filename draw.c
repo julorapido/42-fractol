@@ -6,7 +6,7 @@
 /*   By: jsaintho <jsaintho@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/15 12:42:04 by jsaintho          #+#    #+#             */
-/*   Updated: 2024/07/22 17:07:28 by jsaintho         ###   ########.fr       */
+/*   Updated: 2024/09/13 14:25:10 by jsaintho         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -100,8 +100,8 @@ static void	julia(int thread_id, t_fractol *f)
 				if ((f->z_re * f->z_re) + (f->z_im * f->z_im) > 4)
 					break ;
 				f->zim2 = f->z_im * f->z_im;
-				f->z_im = (2 * f->z_re * f->z_im) - 0.3842;
-				f->z_re = ((f->z_re * f->z_re) - f->zim2) - 0.70176;
+				f->z_im = (2 * f->z_re * f->z_im) + (f->julia_im);
+				f->z_re = ((f->z_re * f->z_re) - f->zim2) + (f->julia_re);
 				f->n++;
 			}
 			set_pixel_color(f, x, f->y, f->n);
@@ -141,7 +141,7 @@ static void	burning_ship(int thread_id, t_fractol *m)
 void	*job(void *arg)
 {
 	t_mutex_data	*md;
-	t_fractol	*f;
+	t_fractol		*f;
 
 	md = (t_mutex_data *) arg;
 	f = (md->data[(*md)._id_]).frctl;

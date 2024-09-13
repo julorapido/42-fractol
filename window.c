@@ -6,7 +6,7 @@
 /*   By: jsaintho <jsaintho@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/14 16:32:30 by jsaintho          #+#    #+#             */
-/*   Updated: 2024/07/22 16:56:29 by jsaintho         ###   ########.fr       */
+/*   Updated: 2024/09/13 14:43:15 by jsaintho         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,14 +37,9 @@ void	set_pixel_color(t_fractol *f, long x, long y, long n)
 	if (x < 0 || y < 0 || y > HEIGHT || x > WIDTH)
 		return ;
 	if (!pixel_insideset)
-	{
-		if (n > (MAX_ITERATIONS - 1) / 2)
-			color = ((n * (0x00FF0000 / ((MAX_ITERATIONS - 1) / 2))) >> 16);
-		else
-			color = ((n * (0xFF000000 / ((MAX_ITERATIONS - 1) / 2))) >> 24);
-	}
+		color = (0xFCBE11) * (n % 255);
 	else
-		color = 0xBBBBBBBB;
+		color = 0;
 	offset = (y * f->linelen + x * (f->bpp / 8));
 	dst = f->buf + (offset);
 	*(unsigned int *)dst = color;
@@ -70,8 +65,8 @@ static void	init_img(t_fractol *f)
 		f->maxim = 0.1;
 		f->minre = -1.85;
 		f->maxre = -1.65;
-		f->zm = 0.0005;
-		f->zm_x = 0.001;
+		f->zm = -0.0002;
+		f->zm_x = 0.0008;
 	}
 	f->re_factor = (f->maxre - f->minre) / (WIDTH - 1);
 	f->im_factor = (f->maxim - f->minim) / (HEIGHT - 1);
@@ -122,7 +117,7 @@ void	re_render(t_fractol *f)
 	(f->render_.mutex_d_)._id_ = 0;
 	pthread_mutex_init(&((f->render_.mutex_d_).mutex), NULL);
 	while (i < NB_THREADS)
-	{
+	{	
 		r->mutex_d_.data[i].id = i;
 		r->mutex_d_.data[i].frctl = f;
 		pthread_create(r->threads + i, NULL, job, &(f->render_.mutex_d_));
@@ -141,19 +136,29 @@ void	re_render(t_fractol *f)
 // ========================================================
 //						CHECK PARAMS
 // ========================================================
-int	check_params(t_fractol *f, char *s)
+int	check_params(t_fractol *f, char **av, int argc)
 {
-	int	v;
-
-	v = 0;
-	if (ft_strncmp(s, "mandelbrot", 10) == 0)
-		v = 1;
-	if (ft_strncmp(s, "julia", 5) == 0)
-		v = 2;
-	if (ft_strncmp(s, "burningship", 11) == 0)
-		v = 3;
-	f->f_mode = v;
-	if (v == 0)
+	f->f_mode = 0;
+	if (ft_strncmp(av[1], "mandelbrot", 10) == 0)
+		f->f_mode = 1;
+	if (ft_strncmp(av[1], "julia", 5) == 0)
+		f->f_mode = 2;
+	if (ft_strncmp(av[1], "burningship", 11) == 0)
+		f->f_mode = 3;
+	if (f->f_mode == 0 || (f->f_mode != 2 && argc != 2))
 		return (-1);
-	return (v);
+	if (f->f_mode == 2)
+	{
+		if (argc == 3 && ft_atoi(av[2]) == 1)
+		{
+			f->julia_im = 0.01;
+			f->julia_re = 0.285;
+		}
+		else if (argc == 3 && ft_atoi(av[2]) == 2)
+		{
+			f->julia_re = -1.417022285618;
+			f->julia_im = 0.0099534;
+		}
+	}
+	return (f->f_mode);
 }

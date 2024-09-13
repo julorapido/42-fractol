@@ -6,7 +6,7 @@
 /*   By: jsaintho <jsaintho@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/17 10:42:45 by jsaintho          #+#    #+#             */
-/*   Updated: 2024/07/22 16:59:14 by jsaintho         ###   ########.fr       */
+/*   Updated: 2024/09/13 13:08:19 by jsaintho         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 #include "fractol.h"
@@ -67,9 +67,9 @@ void	zoom(long x, long y, t_fractol *f, long double zoom)
 int	hook_mousedown(int button, long x, long y, t_fractol *f)
 {
 	if (button == 4)
-		zoom(x, y, f, 0.98);
+		zoom(x, y, f, 0.985);
 	else if (button == 5)
-		zoom(x, y, f, 1 / 0.98);
+		zoom(x, y, f, 1 / 0.985);
 	f->re_factor = (f->maxre - f->minre) / (WIDTH - 1);
 	f->im_factor = (f->maxim - f->minim) / (HEIGHT - 1);
 	re_render(f);
@@ -82,15 +82,14 @@ int	hook_mousedown(int button, long x, long y, t_fractol *f)
 int	clean_exit(t_fractol *f)
 {
 	if (f->img)
-	{
 		mlx_destroy_image(f->mlx, f->img);
-	}
-	if (f->mlx && f->win)
-	{
-		mlx_loop_end(f->mlx);
+	if (f->win)
 		mlx_destroy_window(f->mlx, f->win);
-		free(f);
-		f = NULL;
+	if (f->mlx)
+	{
+		mlx_destroy_display(f->mlx);
+		free(f->mlx);
 	}
+	free(f);
 	exit(0);
 }

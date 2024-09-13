@@ -6,7 +6,7 @@
 /*   By: jsaintho <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/14 16:26:40 by jsaintho          #+#    #+#             */
-/*   Updated: 2024/07/22 17:07:57 by jsaintho         ###   ########.fr       */
+/*   Updated: 2024/09/13 14:29:15 by jsaintho         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,7 @@
 /*  Window Settings	*/
 # define WIDTH 800
 # define HEIGHT 600
-# define MAX_ITERATIONS 30
+# define MAX_ITERATIONS 42
 
 /* Multi threading */
 # define NB_THREADS 4
@@ -78,6 +78,8 @@ struct s_fractol
 	long double	zm_x;
 	long double	zim2;
 	int			f_mode;
+	double		julia_im;
+	double		julia_re;
 	t_render	render_;
 };
 
@@ -85,13 +87,14 @@ struct s_fractol
 void	key_close(int n, t_fractol *t);
 int		clean_exit(t_fractol *t);
 int		hook_mousedown(int button, long x, long y, t_fractol *mlx);
+int		k_hook(int k_code, t_fractol *f);
 
 // MLX & Window
 void	clean_init(t_fractol *t);
 int		init_render(t_fractol *t);
 void	re_render(t_fractol *f);
 int		render(t_fractol *t);
-int		check_params(t_fractol *f, char *s);
+int		check_params(t_fractol *f, char **argv, int argc);
 
 // Draw funcs
 void	set_pixel_color(t_fractol *t, long x, long y, long n);
